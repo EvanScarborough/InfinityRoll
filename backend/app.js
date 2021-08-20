@@ -1,6 +1,9 @@
 const express = require('express');
+var cors = require('cors');
 const path = require("path");
 const app = express();
+
+var user = require("./routes/user");
 
 // Use the .env file
 require('dotenv').config();
@@ -15,8 +18,9 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
-
+app.use("/user", user);
 
 // app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 
