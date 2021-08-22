@@ -1,33 +1,33 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-
-const items = [
-    { name: "Home", link: "/" },
-    { name: "Generators", link: "/generator" },
-    { name: "Dice", link: "/dice" },
-    { name: "User", link: "/user" },
-];
-
-
-const NavArea = styled.div`
+const NavArea = styled.nav`
     width: 100%;
     height: 56px;
     display: flex;
     justify-content: space-between;
 `;
 
-const LinkList = styled.div`
-    display: flex;
+const LinkList = styled.ul`
     margin: 4px 8px;
+    list-style-type: none;
     @media(max-width: 800px) {
         display: none;
     }
 `;
 
-const LinkItem = styled.a`
-    padding: 8px 16px;
+const NavItem = styled.li`
     margin: 4px;
+    float: left;
+`;
+
+const NavLink = styled(Link)`
+    padding: 8px 16px;
+    display: block;
+    text-decoration: none;
+    text-align: right;
+    font-size: 1.2em;
     color: ${props => props.theme.mainoverlay};
     background-color: ${props => props.theme.main};
     border-radius: 4px;
@@ -56,7 +56,7 @@ const HamburgerButton = styled.button`
     transform: translateY(0);
     box-shadow: 0 0 0 rgba(0,0,0,0.3);
     transition: background-color .2s, transform .2s, box-shadow .2s;
-    @media(min-width: 800px) {
+    @media(min-width: 801px) {
         display: none;
     }
     &:hover {
@@ -78,32 +78,47 @@ const Hbar = styled.div`
     height: 3px;
 `;
 
-const HamburgerLinkList = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+const HamburgerNavList = styled.ul`
     position: absolute;
-    right: 8px;
-    top: 60px;
-    @media(min-width: 800px) {
+    right: 4px;
+    top: 40px;
+    list-style-type: none;
+    @media(min-width: 801px) {
         display: none;
     }
 `;
 
-export default function Navbar() {
+const HamburgerNavItem = styled.li`
+    margin: 4px;
+`;
+
+export default function Navbar({user}) {
     const [ expanded, setExpanded ] = useState(false);
+
+    var items = [
+        <NavLink to="/">Home</NavLink>,
+        <NavLink to="/generator">Generators</NavLink>,
+        <NavLink to="/dice">Dice</NavLink>
+    ];
+
+    if (!user) {
+        items.push(<NavLink to="/login">Log In</NavLink>);
+    }
+    else {
+        items.push(<NavLink to="/user">{user.username}</NavLink>);
+    }
 
     return(
         <NavArea>
             <h1>Title</h1>
             <LinkList>
-                {items.map((item, i) => <LinkItem key={i} href={item.link}>{item.name}</LinkItem>)}
+                {items.map((item, i) => <NavItem key={i}>{item}</NavItem>)}
             </LinkList>
             <HamburgerButton onClick={() => setExpanded(!expanded)}><Hbar/><Hbar/><Hbar/></HamburgerButton>
             { expanded ?
-                <HamburgerLinkList>
-                    {items.map((item, i) => <LinkItem key={i} href={item.link}>{item.name}</LinkItem>)}
-                </HamburgerLinkList> : null}
+                <HamburgerNavList>
+                    {items.map((item, i) => <HamburgerNavItem key={i}>{item}</HamburgerNavItem>)}
+                </HamburgerNavList> : null}
         </NavArea>
     );
 }

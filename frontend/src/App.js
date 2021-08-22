@@ -1,6 +1,9 @@
-import React from 'react';
-import Navbar from './components/navigation/Navbar';
+import React, { useState } from 'react';
 import styled, {ThemeProvider} from 'styled-components';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+import Navbar from './components/navigation/Navbar';
+import Login from './components/user/Login';
 
 
 var theme = {
@@ -12,9 +15,32 @@ var theme = {
 
 
 export default function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <Navbar />
-    </ThemeProvider>
-  );
+	const [user, setUser] = useState(null);
+
+
+	return (
+		<ThemeProvider theme={theme}>
+			<Router>
+				<Navbar user={user}/>
+
+				<Switch>
+					<Route path="/generator">
+						<h1>Generators</h1>
+					</Route>
+					<Route path="/dice">
+						<h1>Dice</h1>
+					</Route>
+					<Route path="/user">
+						<h1>User</h1>
+					</Route>
+					<Route path="/login">
+						<Login />
+					</Route>
+					<Route path="/">
+						<h1>Home</h1>
+					</Route>
+				</Switch>
+			</Router>
+		</ThemeProvider>
+	);
 }
