@@ -4,6 +4,7 @@ const path = require("path");
 const app = express();
 
 var user = require("./routes/user");
+var gen = require("./routes/gen");
 
 // Use the .env file
 require('dotenv').config();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/user", user);
+app.use("/api/gen", gen);
 
 // app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 

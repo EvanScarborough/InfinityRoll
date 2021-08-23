@@ -1,11 +1,16 @@
 const mongoose = require("mongoose");
 
 const GenListSchema = mongoose.Schema({
-    name: {
+    unique_name: {
         type: String,
         required: true,
         index: true,
         unique: true
+    },
+    name: {
+        type: String,
+        required: true,
+        index: true
     },
     description: {
         type: String

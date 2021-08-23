@@ -25,6 +25,8 @@ export default function App() {
 			headers: { Accept: "application/json", token: token }
 		}).then(res => res.json()).then(
 			(result) => {
+				result.token = token;
+				console.log('logged in as:');
 				console.log(result);
 				if (result.hasOwnProperty("username")) {
 					localStorage.setItem('token', token);
@@ -55,7 +57,7 @@ export default function App() {
 
 				<Switch>
 					<Route path="/generator">
-						<GeneratorPage />
+						<GeneratorPage user={user}/>
 					</Route>
 					<Route path="/dice">
 						<h1>Dice</h1>

@@ -68,7 +68,7 @@ const WarningLabel = styled.p`
     padding: 8px;
 `;
 
-export default function CreateGenerator({cancel}) {
+export default function CreateGenerator({user, cancel}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState([]);
@@ -84,6 +84,28 @@ export default function CreateGenerator({cancel}) {
         }
     };
 
+    const createGenerator = (e) => {
+        e.preventDefault();
+        fetch("api/gen/create",{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: "application/json", token: user.token },
+            body: JSON.stringify({name, description, tags: tags.map(t => t.unified)})
+        }).then(res => res.json()).then(
+            result => {
+                console.log(result);
+                if (result.hasOwnProperty("id")) {
+
+                }
+                else if (result.hasOwnProperty("message")) {
+                    setWarning(result.message);
+                }
+            },
+            error => {
+                console.log(error);
+                if (error.hasOwnProperty("message")) setWarning(error.message);
+            });
+    };
+
     return(
         <ModalBackground>
             <ModalArea>
@@ -97,7 +119,7 @@ export default function CreateGenerator({cancel}) {
                     <FormLabel htmlFor="tags">Symbols</FormLabel>
                     <FormInput id="tags" value={tags.map((e,i) => e.emoji)} disabled></FormInput>
                     <Picker native onEmojiClick={onEmojiClick} pickerStyle={{minHeight:"300px", width:"100%", alignSelf:"center", marginBottom:"16px"}}/>
-                    <Button>Create</Button>
+                    <Button onClick={e => createGenerator(e)}>Create</Button>
                 </CreateGenForm>
             </ModalArea>
             <Button onClick={()=>cancel()}>Cancel</Button>

@@ -6,13 +6,13 @@ import CreateGenerator from './CreateGenerator';
 
 const MainArea = styled.div``;
 
-export default function GeneratorPage() {
+export default function GeneratorPage({ user }) {
     const [create, setCreate] = useState(false);
 
     return(
         <MainArea>
             <Button onClick={()=>setCreate(true)}>Create New Generator</Button>
-            {create && <CreateGenerator cancel={()=>setCreate(false)} />}
+            {create && <CreateGenerator user={user} cancel={()=>setCreate(false)} />}
         </MainArea>
     );
 }
