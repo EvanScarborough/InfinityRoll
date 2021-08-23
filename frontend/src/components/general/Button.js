@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 const Button = styled.button`
-    outline: none;
     border: none;
     font-size: 1.2em;
     color: ${props => props.theme.mainoverlay};
@@ -13,7 +12,7 @@ const Button = styled.button`
     transform: translateY(0);
     box-shadow: 0 0 0 rgba(0,0,0,0.3);
     transition: background-color .2s, transform .2s, box-shadow .2s;
-    &:hover, &:focus {
+    &:hover {
         background-color: ${props => props.theme.highlight};
         transform: translateY(-4px);
         box-shadow: 0 4px 4px rgba(0,0,0,0.3);

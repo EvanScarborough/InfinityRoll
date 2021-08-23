@@ -5,13 +5,14 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Navbar from './components/navigation/Navbar';
 import Login from './components/user/Login';
 import Button from './components/general/Button';
-
+import GeneratorPage from './components/generator/GeneratorPage';
 
 var theme = {
   main: "#16b897",
   highlight: "#b813d1",
   highlight_dark: "#7d078f",
-  mainoverlay: "white"
+  mainoverlay: "white",
+  background: "white"
 };
 
 
@@ -54,7 +55,7 @@ export default function App() {
 
 				<Switch>
 					<Route path="/generator">
-						<h1>Generators</h1>
+						<GeneratorPage />
 					</Route>
 					<Route path="/dice">
 						<h1>Dice</h1>
