@@ -20,7 +20,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(express.json());
 app.use(cors());
 
-app.use("/user", user);
+app.use("/api/user", user);
 
 // app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 

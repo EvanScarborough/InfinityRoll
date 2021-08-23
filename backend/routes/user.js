@@ -1,5 +1,5 @@
 const express = require("express");
-const { check, validationResult} = require("express-validator/check");
+const { check, validationResult} = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
@@ -16,7 +16,7 @@ const auth = require("../middleware/auth");
 router.post("/signup",
     [
         check("username", "Please enter a valid username").not().isEmpty(),
-        check("password", "Please enter a valid password").isLength({ min: 6 })
+        check("password", "Password must be at least 6 characters").isLength({ min: 6 })
     ],
     async (req, res) => {
         const errors = validationResult(req);
@@ -38,7 +38,7 @@ router.post("/signup",
 
             user = new User({
                 username,
-                hashedPassword
+                password: hashedPassword
             });
 
             await user.save();

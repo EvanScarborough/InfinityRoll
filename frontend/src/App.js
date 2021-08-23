@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Navbar from './components/navigation/Navbar';
 import Login from './components/user/Login';
+import Button from './components/general/Button';
 
 
 var theme = {
@@ -17,6 +18,34 @@ var theme = {
 export default function App() {
 	const [user, setUser] = useState(null);
 
+	const login = (token) => {
+		fetch("api/user/me", {
+			method: 'GET',
+			headers: { Accept: "application/json", token: token }
+		}).then(res => res.json()).then(
+			(result) => {
+				console.log(result);
+				if (result.hasOwnProperty("username")) {
+					localStorage.setItem('token', token);
+					setUser(result);
+				}
+			},
+			(error) => {
+				console.log(error);
+			}
+		);
+	}
+
+	const logout = () => {
+		localStorage.removeItem('token');
+		setUser(null);
+	}
+
+	const token = localStorage.getItem('token');
+
+	if (!user && token) {
+		login(token);
+	}
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -32,9 +61,10 @@ export default function App() {
 					</Route>
 					<Route path="/user">
 						<h1>User</h1>
+						<Button onClick={()=>logout()}>Log Out</Button>
 					</Route>
 					<Route path="/login">
-						<Login />
+						<Login login={login}/>
 					</Route>
 					<Route path="/">
 						<h1>Home</h1>

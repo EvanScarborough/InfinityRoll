@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../general/Button';
+import { useHistory } from "react-router-dom";
 
 const LoginArea = styled.div`
     width: calc(100% - 46px);
@@ -64,18 +65,38 @@ const WarningLabel = styled.p`
 
 
 
-export default function Login() {
+export default function Login({ login }) {
     const [register, setRegister] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [warning, setWarning] = useState("");
 
+    const history = useHistory();
+
     if (register) {
-        const createAccount = (e, data) => {
+        const createAccount = (e) => {
             e.preventDefault();
-            if (data.password === data.passwordConfirm) {
-                console.log(data);
+            if (password === passwordConfirm) {
+                console.log({username, password});
+                fetch("api/user/signup", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Accept: "application/json" },
+                    body: JSON.stringify({username, password})
+                }).then(res => res.json()).then(
+                    (result) => {
+                        console.log(result);
+                        if (result.hasOwnProperty("message")) setWarning(result.message);
+                        if (result.hasOwnProperty("token")) {
+                            login(result.token);
+                            history.push("/");
+                        }
+                    },
+                    (error) => {
+                        console.log(error);
+                        if (error.hasOwnProperty("message")) setWarning(error.message);
+                    }
+                );
             }
             else {
                 setWarning("Password confirmation did not match!");
@@ -85,7 +106,7 @@ export default function Login() {
         return(
             <LoginArea>
                 <LoginLabel>Sign Up</LoginLabel>
-                {warning != "" ? <WarningLabel>{warning}</WarningLabel> : null}
+                {warning !== "" ? <WarningLabel>{warning}</WarningLabel> : null}
                 <LoginForm>
                     <FormLabel htmlFor="username">Username</FormLabel>
                     <FormInput type="username" id="username" value={username} onChange={event => setUsername(event.target.value)} />
@@ -93,7 +114,7 @@ export default function Login() {
                     <FormInput type="password" id="password" value={password} onChange={event => setPassword(event.target.value)} />
                     <FormLabel htmlFor="password_confirm">Confirm Password</FormLabel>
                     <FormInput type="password" id="password_confirm" value={passwordConfirm} onChange={event => setPasswordConfirm(event.target.value)} />
-                    <Button type="submit" onClick={e => createAccount(e, {username,password,passwordConfirm})}>Create Account</Button>
+                    <Button type="submit" onClick={e => createAccount(e)}>Create Account</Button>
                 </LoginForm>
                 <TypeSwitch>
                     <TypeSwitchComment>Already have an account?</TypeSwitchComment>
@@ -103,21 +124,38 @@ export default function Login() {
         );
     }
     else {
-        const logIn = (e, data) => {
+        const logIn = (e) => {
             e.preventDefault();
-            console.log(data);
+            fetch("api/user/login", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: "application/json" },
+                body: JSON.stringify({username, password})
+            }).then(res => res.json()).then(
+                (result) => {
+                    console.log(result);
+                    if (result.hasOwnProperty("message")) setWarning(result.message);
+                    if (result.hasOwnProperty("token")) {
+                        login(result.token);
+                        history.push("/");
+                    }
+                },
+                (error) => {
+                    console.log(error);
+                    if (error.hasOwnProperty("message")) setWarning(error.message);
+                }
+            );
         }
 
         return(
             <LoginArea>
                 <LoginLabel>Log In</LoginLabel>
-                {warning != "" ? <WarningLabel>{warning}</WarningLabel> : null}
+                {warning !== "" ? <WarningLabel>{warning}</WarningLabel> : null}
                 <LoginForm>
                     <FormLabel htmlFor="username">Username</FormLabel>
                     <FormInput type="username" id="username" value={username} onChange={event => setUsername(event.target.value)} />
                     <FormLabel htmlFor="password">Password</FormLabel>
                     <FormInput type="password" id="password" value={password} onChange={event => setPassword(event.target.value)} />
-                    <Button type="submit" onClick={e => logIn(e, {username,password})}>Log In</Button>
+                    <Button type="submit" onClick={e => logIn(e)}>Log In</Button>
                 </LoginForm>
                 <TypeSwitch>
                     <TypeSwitchComment>Need an account?</TypeSwitchComment>
