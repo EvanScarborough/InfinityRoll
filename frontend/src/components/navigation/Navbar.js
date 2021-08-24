@@ -28,7 +28,7 @@ const NavLink = styled(Link)`
     text-decoration: none;
     text-align: right;
     font-size: 1.2em;
-    color: ${props => props.theme.mainoverlay};
+    color: ${props => props.theme.main_overlay};
     background-color: ${props => props.theme.main};
     border-radius: 4px;
     border-bottom: solid 3px rgba(0,0,0,0.2);
@@ -72,7 +72,7 @@ const HamburgerButton = styled.button`
 `;
 
 const Hbar = styled.div`
-    background-color: ${props => props.theme.mainoverlay};
+    background-color: ${props => props.theme.main_overlay};
     margin: 6px 8px;
     width: 30px;
     height: 3px;

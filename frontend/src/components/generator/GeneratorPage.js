@@ -1,18 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '../general/Button';
+import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch } from "react-router-dom";
 
-import CreateGenerator from './CreateGenerator';
+import Generator from './Generator';
+import GeneratorList from './GeneratorList';
 
 const MainArea = styled.div``;
 
 export default function GeneratorPage({ user }) {
-    const [create, setCreate] = useState(false);
+    let match = useRouteMatch();
 
     return(
-        <MainArea>
-            <Button onClick={()=>setCreate(true)}>Create New Generator</Button>
-            {create && <CreateGenerator user={user} cancel={()=>setCreate(false)} />}
-        </MainArea>
+        <Switch>
+            <Route path={`${match.path}/:genName`}>
+                <Generator user={user} />
+            </Route>
+            <Route path={match.path}>
+                <GeneratorList user={user} />
+            </Route>
+        </Switch>
     );
 }

@@ -10,6 +10,15 @@ const GenItem = require("../models/genitem");
 const auth = require("../middleware/auth");
 
 
+
+router.get("/", async (req, res) => {
+    console.log("getting generators");
+    let genlists = await GenList.find().populate('createdBy', 'username');
+    return res.status(200).json({lists:genlists});
+});
+
+
+
 router.post("/create", auth,
     [
         check("name", "Please enter a valid name").not().isEmpty()

@@ -20,7 +20,8 @@ const GenListSchema = mongoose.Schema({
         default: []
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     createdAt: {
         type: Date,

@@ -31,7 +31,7 @@ const ModalArea = styled.div`
 
 const ModalLabel = styled.h1`
     background-color: ${props => props.theme.main};
-    color: ${props => props.theme.mainoverlay};
+    color: ${props => props.theme.main_overlay};
     text-align: center;
     padding: 8px;
 `;

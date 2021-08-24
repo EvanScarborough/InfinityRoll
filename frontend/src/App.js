@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, {ThemeProvider} from 'styled-components';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
@@ -11,7 +11,7 @@ var theme = {
   main: "#16b897",
   highlight: "#b813d1",
   highlight_dark: "#7d078f",
-  mainoverlay: "white",
+  main_overlay: "white",
   background: "white"
 };
 
@@ -44,11 +44,12 @@ export default function App() {
 		setUser(null);
 	}
 
-	const token = localStorage.getItem('token');
-
-	if (!user && token) {
-		login(token);
-	}
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		if (!user && token) {
+			login(token);
+		}
+	});
 
 	return (
 		<ThemeProvider theme={theme}>
