@@ -102,7 +102,7 @@ function ListItem({ num, item, user }) {
         <ListItemArea>
             <ListNumber>{num}</ListNumber>
             <ListText>{item}</ListText>
-            <ListUser>By JJJJJJJJ</ListUser>
+            <ListUser>By {user.username}</ListUser>
         </ListItemArea>
     );
 }
@@ -132,7 +132,7 @@ function AddListItem({ num, submit }) {
             <FadedListNumber>{num}</FadedListNumber>
             <AddItemForm>
                 <AddItemInput type="text" id="item" value={item} onChange={event => setItem(event.target.value)}></AddItemInput>
-                <Button onClick={e => {e.preventDefault(); submit(item);}}>Submit</Button>
+                <Button onClick={e => {e.preventDefault(); setItem(""); submit(item);}}>Submit</Button>
             </AddItemForm>
             <ListUser>Add A New Item</ListUser>
         </ListItemArea>
@@ -189,8 +189,17 @@ export default function Generator({ user }) {
 
     const addItem = item => {
         console.log(item);
+        fetch(`/api/gen/${genName}/item`,{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: "application/json", token: user.token },
+                body:JSON.stringify({item})
+            })
+            .then(res => res.json()).then(res => {
+                console.log(res);
+                res.item.createdBy = user;
+                setGen({ info:gen.info, items:[...gen.items,res.item]});
+            });
     };
-    
 
     return (
         <MainArea>
@@ -208,13 +217,8 @@ export default function Generator({ user }) {
             <Button style={{alignSelf:"center",padding:"8px 32px"}} onClick={()=>setViewList(!viewList)}>View List Items</Button>
             { viewList ?
                 <ItemList>
-                    <ListItem num="1" item="Whatever" />
-                    <ListItem num="2" item="Whatever" />
-                    <ListItem num="3" item="Uh Oh this is a long one! Let's see what happens when this item is long and it overflows over into other lines and whatever." />
-                    <ListItem num="4" item="Whatever" />
-                    <ListItem num="5" item="Whatever" />
-                    <ListItem num="6" item="Whatever" />
-                    <AddListItem num="7" submit={addItem}/>
+                    {gen.items.map((item, i) => <ListItem key={i} num={i+1} item={item.text} user={item.createdBy} />)}
+                    <AddListItem num={gen.items.length + 1} submit={addItem}/>
                 </ItemList> :
                 <Description>{gen.items.length} Items</Description>
             }

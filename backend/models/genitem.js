@@ -7,7 +7,8 @@ const GenItemSchema = mongoose.Schema({
         index: true
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     createdAt: {
         type: Date,

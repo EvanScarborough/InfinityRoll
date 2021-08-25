@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:name", async(req, res) => {
     let genlist = await GenList.findOne({ unique_name: req.params.name }).populate('createdBy', 'username');
-    let genitems = await GenItem.find({ listName: req.params.name }).populate('createdBy', 'username');
+    let genitems = await GenItem.find({ listName: req.params.name }).sort('createdAt').populate('createdBy', 'username');
     return res.status(200).json({ list:genlist, items:genitems });
 });
 
@@ -71,7 +71,33 @@ router.post("/create", auth,
         }
     });
 
+router.post("/:name/item", auth, [
+        check("item", "Please enter a valid item").not().isEmpty()
+    ], async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                message: errors.errors[0].msg,
+                errors: errors.array()
+            });
+        }
+        const { item } = req.body;
 
+        try {
+            let genitem = new GenItem({
+                listName: req.params.name,
+                createdBy: req.user.id,
+                text: item
+            });
+            await genitem.save();
+            return res.status(200).json({message: "Successfully added a new item", item: genitem});
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({
+                message: "Server error"
+            });
+        }
+    });
 
 
 module.exports = router;
