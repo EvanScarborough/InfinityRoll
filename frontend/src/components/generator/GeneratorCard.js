@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { LinkButton } from '../general/Button';
-import { Link } from "react-router-dom";
 
 const CardArea = styled.div`
     display: inline-block;
@@ -45,7 +44,7 @@ function getRandomInt(max) {
 function shuffle(array) {
     var currentIndex = array.length,  randomIndex;
     // While there remain elements to shuffle...
-    while (currentIndex != 0) {
+    while (currentIndex !== 0) {
       // Pick a remaining element...
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex--;
@@ -58,13 +57,12 @@ function shuffle(array) {
 
 export default function GeneratorCard({ id, name, creator, description, date, tags }) {
     var codes = tags.map(t => t.split('-').map(p => parseInt(p, 16)));
-    var indexToRemove = 0;
     while (codes.length > 3) {
-        indexToRemove = getRandomInt(codes.length);
+        const indexToRemove = getRandomInt(codes.length);
         codes = codes.filter((_, i) => i !== indexToRemove);
     }
 
-    const [emojis, setEmojis] = useState(shuffle(codes));
+    const [emojis] = useState(shuffle(codes));
 
     return (
         <CardArea>

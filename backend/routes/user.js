@@ -113,7 +113,7 @@ router.get("/me", auth, async (req, res) => {
         // request.user is getting fetched from Middleware after token authentication
         const user = await User.findById(req.user.id);
         // remove the password from the response
-        const userFiltered = { username: user.username, admin: user.admin, createdAt: user.createdAt }
+        const userFiltered = { id: user._id, username: user.username, admin: user.admin, createdAt: user.createdAt }
         res.json(userFiltered);
     } catch (e) {
         res.send({ message: "Error fetching user" });

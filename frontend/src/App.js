@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import styled, {ThemeProvider} from 'styled-components';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {ThemeProvider} from 'styled-components';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Navbar from './components/navigation/Navbar';
 import Login from './components/user/Login';
@@ -9,9 +9,12 @@ import GeneratorPage from './components/generator/GeneratorPage';
 
 var theme = {
   main: "#16b897",
+  main_dark: "#03362b",
+  main_wash: "#bdf2e7",
   highlight: "#b813d1",
   highlight_dark: "#7d078f",
   main_overlay: "white",
+  main_dark_overlay: "white",
   background: "white"
 };
 
@@ -20,7 +23,7 @@ export default function App() {
 	const [user, setUser] = useState(null);
 
 	const login = (token) => {
-		fetch("api/user/me", {
+		fetch("/api/user/me", {
 			method: 'GET',
 			headers: { Accept: "application/json", token: token }
 		}).then(res => res.json()).then(

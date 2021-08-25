@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '../general/Button';
-import { BrowserRouter as Router, Switch, Route, Link, useRouteMatch, useParams } from "react-router-dom";
 
 import CreateGenerator from './CreateGenerator';
 import GeneratorCard from './GeneratorCard';

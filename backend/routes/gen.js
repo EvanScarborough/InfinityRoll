@@ -12,9 +12,14 @@ const auth = require("../middleware/auth");
 
 
 router.get("/", async (req, res) => {
-    console.log("getting generators");
     let genlists = await GenList.find().populate('createdBy', 'username');
     return res.status(200).json({lists:genlists});
+});
+
+router.get("/:name", async(req, res) => {
+    let genlist = await GenList.findOne({ unique_name: req.params.name }).populate('createdBy', 'username');
+    let genitems = await GenItem.find({ listName: req.params.name }).populate('createdBy', 'username');
+    return res.status(200).json({ list:genlist, items:genitems });
 });
 
 
