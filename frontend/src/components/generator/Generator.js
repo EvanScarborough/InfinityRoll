@@ -165,18 +165,28 @@ export default function Generator({ user }) {
 
     const [viewList, setViewList] = useState(false);
     const [gen, setGen] = useState(null);
+    const [results, setResults] = useState([]);
     const [emojis, setEmojis] = useState([]);
+
+    const generate = () => {
+        if (!gen || gen.items.length === 0) { setResults(["👎 No items to choose from. Add items below!", ...results]); return; }
+        const item = gen.items[getRandomInt(gen.items.length)];
+        setResults([item.text, ...results]);
+    }
 
     useEffect(() => {
         if (gen) return;
-        fetch(`/api/gen/${genName}`, { method: 'GET', headers: { Accept: "application/json" } })
+        fetch(`/api/gen/${genName}`, { method: 'GET', headers: { Accept: 'application/json' } })
             .then(res => res.json()).then(res => {
                 setGen({ info:res.list, items:res.items });
+                if (res.items.length === 0) setViewList(true);
             });
     });
 
     if (!gen || !gen.items || !gen.info) return <Loading>Loading...</Loading>
     
+    if (results.length == 0) generate();
+
     if (emojis.length === 0) {
         var codes = gen.info.tags.map(t => t.split('-').map(p => parseInt(p, 16)));
         while (codes.length > 5) {
@@ -191,7 +201,7 @@ export default function Generator({ user }) {
         console.log(item);
         fetch(`/api/gen/${genName}/item`,{
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', Accept: "application/json", token: user.token },
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json', token: user.token },
                 body:JSON.stringify({item})
             })
             .then(res => res.json()).then(res => {
@@ -207,12 +217,9 @@ export default function Generator({ user }) {
             <GenTags>{emojis.map(e => String.fromCodePoint(...e))}</GenTags>
             <GenUser>By {gen.info.createdBy.username}</GenUser>
             <Description>{gen.info.description}</Description>
-            <Button style={{alignSelf:"center",padding:"16px 48px"}}>Generate</Button>
+            <Button style={{alignSelf:"center",padding:"16px 48px"}} onClick={() => generate()}>Generate</Button>
             <GenArea>
-                <GenResult>Billy</GenResult>
-                <GenResult>Billy</GenResult>
-                <GenResult>Billy</GenResult>
-                <GenResult>Billy</GenResult>
+                {results.map((r,i) => <GenResult key={i}>{r}</GenResult>)}
             </GenArea>
             <Button style={{alignSelf:"center",padding:"8px 32px"}} onClick={()=>setViewList(!viewList)}>View List Items</Button>
             { viewList ?
