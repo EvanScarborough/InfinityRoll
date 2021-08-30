@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Button from '../general/Button';
+import {LinkButton} from '../general/Button';
 
 import CreateGenerator from './CreateGenerator';
 import GeneratorCard from './GeneratorCard';
@@ -68,7 +68,7 @@ export default function GeneratorList({ user }) {
 
     return(
         <MainArea>
-            <Button onClick={()=>setCreate(true)}>Create New Generator</Button>
+            <LinkButton to="newgenerator">Create New Generator</LinkButton>
             <GeneratorGroup title="All" items={generators}/>
 
             {create && <CreateGenerator user={user} cancel={()=>setCreate(false)} />}

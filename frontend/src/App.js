@@ -6,6 +6,7 @@ import Navbar from './components/navigation/Navbar';
 import Login from './components/user/Login';
 import Button from './components/general/Button';
 import GeneratorPage from './components/generator/GeneratorPage';
+import CreateGenerator from './components/generator/CreateGenerator';
 
 var theme = {
   main: "#16b897",
@@ -60,6 +61,9 @@ export default function App() {
 				<Navbar user={user}/>
 
 				<Switch>
+					<Route path="/newgenerator">
+						<CreateGenerator user={user}/>
+					</Route>
 					<Route path="/generator">
 						<GeneratorPage user={user}/>
 					</Route>

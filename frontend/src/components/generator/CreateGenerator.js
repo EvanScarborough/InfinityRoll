@@ -2,34 +2,22 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '../general/Button';
 import Picker from 'emoji-picker-react';
+import { useHistory } from "react-router-dom";
 
-const ModalBackground = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
 
-const ModalArea = styled.div`
+const MainArea = styled.div`
     width: calc(100% - 46px);
     background-color: ${props => props.theme.background};
-    max-width: 500px;
+    max-width: 800px;
     margin: 40px auto 16px auto;
     border: solid 5px ${props => props.theme.main};
     border-radius: 16px;
     box-shadow: 0 8px 8px rgba(0,0,0,0.1);
-    max-height: calc(100vh - 140px);
-    min-height: 200px;
     display: flex;
     flex-direction: column;
 `;
 
-const ModalLabel = styled.h1`
+const AreaLabel = styled.h1`
     background-color: ${props => props.theme.main};
     color: ${props => props.theme.main_overlay};
     text-align: center;
@@ -58,6 +46,48 @@ const FormInput = styled.input`
         outline: none;
     }
 `;
+const FormTextArea = styled.textarea`
+    font-size: 1.2em;
+    border: solid 3px ${props => props.theme.main};
+    border-radius: 4px;
+    margin-bottom: 24px;
+    padding: 8px;
+    resize: none;
+    font-family: inherit;
+    &:focus {
+        border: solid 3px ${props => props.theme.highlight};
+        outline: none;
+    }
+`;
+
+const SymbolArea = styled.div`
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+    @media(max-width:600px){
+        grid-template-columns: auto;
+        grid-template-rows: auto auto;
+    }
+`;
+const SymbolList = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    min-height: 4em;
+`;
+const SymbolButton = styled.button`
+    font-size: 2em;
+    height: 1.5em;
+    width: 1.5em;
+    padding: 4px;
+    border: none;
+    background-color: ${props => props.theme.background};
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover{
+        background-color: ${props => props.theme.main_wash};
+    }
+`;
 
 const WarningLabel = styled.p`
     background-color: #faa;
@@ -74,7 +104,10 @@ export default function CreateGenerator({user, cancel}) {
     const [tags, setTags] = useState([]);
     const [warning, setWarning] = useState(null);
 
+    const history = useHistory();
+
     const onEmojiClick = (event, emoji) => {
+        event.preventDefault();
         const index = tags.findIndex(t => t.unified === emoji.unified);
         if (index >= 0) { // remove from tags
             setTags(tags.filter((_, i) => i !== index));
@@ -94,7 +127,7 @@ export default function CreateGenerator({user, cancel}) {
             result => {
                 console.log(result);
                 if (result.hasOwnProperty("id")) {
-
+                    history.push(`generator/${result.id}`);
                 }
                 else if (result.hasOwnProperty("message")) {
                     setWarning(result.message);
@@ -107,22 +140,23 @@ export default function CreateGenerator({user, cancel}) {
     };
 
     return(
-        <ModalBackground>
-            <ModalArea>
-                <ModalLabel>Create Generator</ModalLabel>
-                {warning && <WarningLabel>{warning}</WarningLabel>}
-                <CreateGenForm>
-                    <FormLabel htmlFor="name">Name</FormLabel>
-                    <FormInput id="name" value={name} onChange={event => setName(event.target.value)}></FormInput>
-                    <FormLabel htmlFor="description">Description</FormLabel>
-                    <FormInput id="description" value={description} onChange={event => setDescription(event.target.value)}></FormInput>
-                    <FormLabel htmlFor="tags">Symbols</FormLabel>
-                    <FormInput id="tags" value={tags.map((e,i) => e.emoji)} disabled></FormInput>
+        <MainArea>
+            <AreaLabel>Create Generator</AreaLabel>
+            {warning && <WarningLabel>{warning}</WarningLabel>}
+            <CreateGenForm>
+                <FormLabel htmlFor="name">Name</FormLabel>
+                <FormInput id="name" value={name} onChange={event => setName(event.target.value)}></FormInput>
+                <FormLabel htmlFor="description">Description</FormLabel>
+                <FormTextArea id="description" value={description} onChange={event => setDescription(event.target.value)} rows="4"></FormTextArea>
+                <FormLabel htmlFor="tags">Symbols</FormLabel>
+                <SymbolArea>
+                    <SymbolList>
+                        {tags.map((e,i) => <SymbolButton onClick={event=>onEmojiClick(event,e)}>{e.emoji}</SymbolButton>)}
+                    </SymbolList>
                     <Picker native onEmojiClick={onEmojiClick} pickerStyle={{minHeight:"300px", width:"100%", alignSelf:"center", marginBottom:"16px"}}/>
-                    <Button onClick={e => createGenerator(e)}>Create</Button>
-                </CreateGenForm>
-            </ModalArea>
-            <Button onClick={()=>cancel()}>Cancel</Button>
-        </ModalBackground>
+                </SymbolArea>
+                <Button onClick={e => createGenerator(e)}>Create</Button>
+            </CreateGenForm>
+        </MainArea>
     );
 }
