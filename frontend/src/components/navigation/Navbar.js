@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from "react-router-dom";
+import SvgLogo from '../general/SvgLogo';
 
 const NavArea = styled.nav`
     width: 100%;
@@ -71,6 +72,20 @@ const HamburgerButton = styled.button`
     }
 `;
 
+const LogoBox = styled(Link)`
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    text-decoration: none;
+    color: ${props => props.theme.main};
+    &:visited{text-decoration: none;}
+    &:active{text-decoration: none;}
+    &:hover{text-decoration: underline;}
+`;
+const LogoText = styled.h1`
+    margin-left: 8px;
+`;
+
 const Hbar = styled.div`
     background-color: ${props => props.theme.main_overlay};
     margin: 6px 8px;
@@ -110,7 +125,10 @@ export default function Navbar({user}) {
 
     return(
         <NavArea>
-            <h1>Title</h1>
+            <LogoBox to="/">
+                <SvgLogo style={{width:"2.4em"}}/>
+                <LogoText>InfinityRoll</LogoText>
+            </LogoBox>
             <LinkList>
                 {items.map((item, i) => <NavItem key={i}>{item}</NavItem>)}
             </LinkList>
