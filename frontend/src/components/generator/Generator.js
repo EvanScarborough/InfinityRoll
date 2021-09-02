@@ -165,37 +165,73 @@ export default function Generator({ user }) {
 
     const [viewList, setViewList] = useState(false);
     const [gen, setGen] = useState(null);
+    const [references, setReferences] = useState({});
     const [results, setResults] = useState([]);
     const [emojis, setEmojis] = useState([]);
 
+
+
+    const pickItem = (list, refs, before, after) => {
+        var item = before + list[getRandomInt(list.length)] + after;
+        
+        const refmatch = item.match(/@([a-zA-Z_][a-z0-9_]*)/);
+        if (refmatch) {
+            // there's a reference to another generator
+            const b = item.substring(0, refmatch.index);
+            const a = item.substring(refmatch.index + refmatch[0].length);
+            const refID = refmatch[1].toLowerCase();
+            if (refs[refID] && refs[refID].length > 0) {
+                // that reference has already been loaded
+                pickItem(refs[refID], refs, b, a);
+            }
+            else {
+                // need to load a new generator
+                fetch(`/api/gen/${refID}`,{ method: 'GET', headers: { Accept: 'application/json' }})
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res && res.items && res.items.length > 0) {
+                            // got a valid generator
+                            refs[refID] = res.items.map(i => i.text);
+                            pickItem(refs[refID], refs, b, a);
+                        }
+                    }).catch(err => setResults(["Error", ...results]));
+            }
+        }
+        else {
+            setReferences(refs);
+            setResults([item, ...results]);
+        }
+    }
     const generate = () => {
+        console.log("GENERATE");
         if (!gen || gen.items.length === 0) { setResults(["👎 No items to choose from. Add items below!", ...results]); return; }
-        const item = gen.items[getRandomInt(gen.items.length)];
-        setResults([item.text, ...results]);
+        pickItem(gen.items.map(i => i.text), references, "", "");
     }
 
+
+
     useEffect(() => {
-        if (gen) return;
-        fetch(`/api/gen/${genName}`, { method: 'GET', headers: { Accept: 'application/json' } })
+        if (!gen) {
+            fetch(`/api/gen/${genName}`, { method: 'GET', headers: { Accept: 'application/json' } })
             .then(res => res.json()).then(res => {
                 setGen({ info:res.list, items:res.items });
                 if (res.items.length === 0) setViewList(true);
             });
+        }
+        else if (emojis.length === 0) {
+            var codes = gen.info.tags.map(t => t.split('-').map(p => parseInt(p, 16)));
+            while (codes.length > 5) {
+                const indexToRemove = getRandomInt(codes.length);
+                codes = codes.filter((_, i) => i !== indexToRemove);
+            }
+            setEmojis(shuffle(codes));
+        }
+        else if (results.length === 0 && Object.keys(references).length === 0) {
+            generate();
+        }
     });
 
     if (!gen || !gen.items || !gen.info) return <Loading>Loading...</Loading>
-    
-    if (results.length == 0) generate();
-
-    if (emojis.length === 0) {
-        var codes = gen.info.tags.map(t => t.split('-').map(p => parseInt(p, 16)));
-        while (codes.length > 5) {
-            const indexToRemove = getRandomInt(codes.length);
-            codes = codes.filter((_, i) => i !== indexToRemove);
-        }
-        setEmojis(shuffle(codes));
-    }
-
 
     const addItem = item => {
         console.log(item);
