@@ -12,8 +12,14 @@ const auth = require("../middleware/auth");
 
 
 router.get("/", async (req, res) => {
+    searchTerm = req.query.search;
+
+    if (searchTerm) {
+        let genlists = await GenList.find({$text: {$search: searchTerm}}).populate('createdBy', 'username');
+        return res.status(200).json({groups:[{title:"Search Results",lists:genlists}]});
+    }
     let genlists = await GenList.find().populate('createdBy', 'username');
-    return res.status(200).json({lists:genlists});
+    return res.status(200).json({groups:[{title:"All",lists:genlists}]});
 });
 
 router.get("/:name", async(req, res) => {

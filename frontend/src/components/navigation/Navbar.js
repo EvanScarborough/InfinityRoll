@@ -111,9 +111,7 @@ export default function Navbar({user}) {
     const [ expanded, setExpanded ] = useState(false);
 
     var items = [
-        <NavLink to="/">Home</NavLink>,
-        <NavLink to="/generator">Generators</NavLink>,
-        <NavLink to="/dice">Dice</NavLink>
+        <NavLink to="/generator">Generators</NavLink>
     ];
 
     if (!user) {

@@ -13,7 +13,8 @@ const GenListSchema = mongoose.Schema({
         index: true
     },
     description: {
-        type: String
+        type: String,
+        index: true
     },
     tags: {
         type: [String],
@@ -46,5 +47,6 @@ const GenListSchema = mongoose.Schema({
     }
 });
 
+GenListSchema.index({'name': 'text', 'unique_name': 'text', 'description': 'text'});
 
 module.exports = mongoose.model("GenList", GenListSchema);
