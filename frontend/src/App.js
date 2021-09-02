@@ -3,10 +3,12 @@ import {ThemeProvider} from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Navbar from './components/navigation/Navbar';
+import HomePage from './components/home/HomePage';
 import Login from './components/user/Login';
 import Button from './components/general/Button';
 import GeneratorPage from './components/generator/GeneratorPage';
 import CreateGenerator from './components/generator/CreateGenerator';
+import Footer from './components/navigation/Footer';
 
 var theme = {
   main: "#16b897",
@@ -78,9 +80,11 @@ export default function App() {
 						<Login login={login}/>
 					</Route>
 					<Route path="/">
-						<h1>Home</h1>
+						<HomePage />
 					</Route>
 				</Switch>
+
+				<Footer />
 			</Router>
 		</ThemeProvider>
 	);

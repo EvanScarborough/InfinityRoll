@@ -9,10 +9,12 @@ const MainArea = styled.div`
     max-width: 800px;
     margin: auto;
     margin-top: 32px;
+    margin-bottom: 64px;
     border: solid 5px ${props => props.theme.main};
     border-radius: 16px;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 8px 8px rgba(0,0,0,0.1);
 `;
 
 const Loading = styled.h2``;

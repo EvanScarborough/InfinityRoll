@@ -7,6 +7,7 @@ const LoginArea = styled.div`
     width: calc(100% - 46px);
     max-width: 500px;
     margin: 40px auto 0 auto;
+    margin-bottom: 64px;
     border: solid 5px ${props => props.theme.main};
     border-radius: 16px;
     box-shadow: 0 8px 8px rgba(0,0,0,0.1);
@@ -89,7 +90,7 @@ export default function Login({ login }) {
                         if (result.hasOwnProperty("message")) setWarning(result.message);
                         if (result.hasOwnProperty("token")) {
                             login(result.token);
-                            history.push("/");
+                            history.push("/generator");
                         }
                     },
                     (error) => {
@@ -136,7 +137,7 @@ export default function Login({ login }) {
                     if (result.hasOwnProperty("message")) setWarning(result.message);
                     if (result.hasOwnProperty("token")) {
                         login(result.token);
-                        history.push("/");
+                        history.push("/generator");
                     }
                 },
                 (error) => {

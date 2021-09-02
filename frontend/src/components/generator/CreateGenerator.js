@@ -10,6 +10,7 @@ const MainArea = styled.div`
     background-color: ${props => props.theme.background};
     max-width: 800px;
     margin: 40px auto 16px auto;
+    margin-bottom: 64px;
     border: solid 5px ${props => props.theme.main};
     border-radius: 16px;
     box-shadow: 0 8px 8px rgba(0,0,0,0.1);

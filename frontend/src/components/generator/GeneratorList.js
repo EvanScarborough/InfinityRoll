@@ -8,6 +8,8 @@ const MainArea = styled.div`
     width: 100%;
     margin: auto;
     margin-top: 16px;
+    margin-bottom: 64px;
+    min-height: 100vh;
     max-width: 1000px;
     display: flex;
     flex-direction: column;
