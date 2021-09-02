@@ -98,6 +98,7 @@ const HamburgerNavList = styled.ul`
     right: 4px;
     top: 40px;
     list-style-type: none;
+    z-index: 1000;
     @media(min-width: 801px) {
         display: none;
     }
