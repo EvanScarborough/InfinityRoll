@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Button, {LinkButton} from '../general/Button';
 
+import Button, {LinkButton} from '../general/Button';
 import GeneratorCard from './GeneratorCard';
 
 const MainArea = styled.div`
@@ -57,15 +57,10 @@ function GeneratorGroup({ title, items }) {
         <GroupArea>
             <GroupTitle>{title}</GroupTitle>
             <GroupList>
-                {items.map((gen,i)=>
+                {items.map(gen=>
                     <GeneratorCard
                         key={gen.unique_name}
-                        id={gen.unique_name}
-                        name={gen.name}
-                        description={gen.description}
-                        creator={gen.createdBy}
-                        date={gen.createdAt}
-                        tags={gen.tags}
+                        gen={gen}
                     />
                 )}
             </GroupList>

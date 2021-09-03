@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { LinkButton } from '../general/Button';
+import useEmojis from '../../hooks/Emoji';
 
 const CardArea = styled.div`
     display: inline-block;
@@ -38,39 +39,16 @@ const Description = styled.p`
     padding: 4px 8px;
 `;
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
-function shuffle(array) {
-    var currentIndex = array.length,  randomIndex;
-    // While there remain elements to shuffle...
-    while (currentIndex !== 0) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-    return array;
-}
-
-export default function GeneratorCard({ id, name, creator, description, date, tags }) {
-    var codes = tags.map(t => t.split('-').map(p => parseInt(p, 16)));
-    while (codes.length > 3) {
-        const indexToRemove = getRandomInt(codes.length);
-        codes = codes.filter((_, i) => i !== indexToRemove);
-    }
-
-    const [emojis] = useState(shuffle(codes));
+export default function GeneratorCard({ gen }) {
+    const emojis = useEmojis(gen, 3);
 
     return (
         <CardArea>
-            <CardTitle>{name}</CardTitle>
-            <Tags>{emojis.map(e => String.fromCodePoint(...e))}</Tags>
-            <AuthorCridit>by {creator.username}</AuthorCridit>
-            <Description>{description}</Description>
-            <LinkButton to={"/generator/"+id} style={{display:"block", marginBottom:"8px"}}>Generate</LinkButton>
+            <CardTitle>{gen.name}</CardTitle>
+            <Tags>{emojis}</Tags>
+            <AuthorCridit>by {gen.createdBy.username}</AuthorCridit>
+            <Description>{gen.description}</Description>
+            <LinkButton to={`/generator/${gen.unique_name}`} style={{display:"block", marginBottom:"8px"}}>Generate</LinkButton>
         </CardArea>
     );
 }

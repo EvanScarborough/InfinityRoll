@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Button from '../general/Button';
 import { useParams } from "react-router-dom";
-
+import useGenerator from '../../hooks/Generator';
+import useEmojis from '../../hooks/Emoji';
 
 const MainArea = styled.div`
     width: calc(100% - 64px);
@@ -78,15 +79,7 @@ const ListNumber = styled.p`
     justify-self: end;
     margin-right: 16px;
     font-weight: bold;
-`;
-const FadedListNumber = styled.p`
-    grid-area: number;
-    font-size: 1.5em;
-    align-self: center;
-    justify-self: end;
-    margin-right: 16px;
-    font-weight: bold;
-    color: ${props => props.theme.main};
+    color: ${props => props.faded ? props.theme.main : props.theme.background_text};
 `;
 const ListText = styled.p`
     grid-area: text;
@@ -98,16 +91,6 @@ const ListUser = styled.p`
     color: ${props => props.theme.main};
     padding: 4px 0 6px 0;
 `;
-
-function ListItem({ num, item, user }) {
-    return (
-        <ListItemArea>
-            <ListNumber>{num}</ListNumber>
-            <ListText>{item}</ListText>
-            <ListUser>By {user.username}</ListUser>
-        </ListItemArea>
-    );
-}
 
 const AddItemForm = styled.form`
     display: flex;
@@ -126,133 +109,45 @@ const AddItemInput = styled.input`
     }
 `;
 
+
+function ListItem({ num, item, user }) {
+    return (
+        <ListItemArea>
+            <ListNumber>{num}</ListNumber>
+            <ListText>{item}</ListText>
+            <ListUser>By {user.username}</ListUser>
+        </ListItemArea>
+    );
+}
+
 function AddListItem({ num, submit }) {
     const [item, setItem] = useState("");
 
     return (
         <ListItemArea>
-            <FadedListNumber>{num}</FadedListNumber>
+            <ListNumber faded>{num}</ListNumber>
             <AddItemForm>
                 <AddItemInput type="text" id="item" value={item} onChange={event => setItem(event.target.value)}></AddItemInput>
-                <Button onClick={e => {e.preventDefault(); setItem(""); submit(item);}}>Submit</Button>
+                <Button onClick={e => {e.preventDefault(); submit(item); setItem("");}}>Submit</Button>
             </AddItemForm>
             <ListUser>Add A New Item</ListUser>
         </ListItemArea>
     );
 }
 
-
-
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
-function shuffle(array) {
-    var currentIndex = array.length,  randomIndex;
-    // While there remain elements to shuffle...
-    while (currentIndex !== 0) {
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-    return array;
-}
-
-
 export default function Generator({ user }) {
     let { genName } = useParams();
 
     const [viewList, setViewList] = useState(false);
-    const [gen, setGen] = useState(null);
-    const [references, setReferences] = useState({});
-    const [results, setResults] = useState([]);
-    const [emojis, setEmojis] = useState([]);
-
-
-
-    const pickItem = (list, refs, before, after) => {
-        var item = before + list[getRandomInt(list.length)] + after;
-        
-        const refmatch = item.match(/@([a-zA-Z_][a-z0-9_]*)/);
-        if (refmatch) {
-            // there's a reference to another generator
-            const b = item.substring(0, refmatch.index);
-            const a = item.substring(refmatch.index + refmatch[0].length);
-            const refID = refmatch[1].toLowerCase();
-            if (refs[refID] && refs[refID].length > 0) {
-                // that reference has already been loaded
-                pickItem(refs[refID], refs, b, a);
-            }
-            else {
-                // need to load a new generator
-                fetch(`/api/gen/${refID}`,{ method: 'GET', headers: { Accept: 'application/json' }})
-                    .then(res => res.json())
-                    .then(res => {
-                        if (res && res.items && res.items.length > 0) {
-                            // got a valid generator
-                            refs[refID] = res.items.map(i => i.text);
-                            pickItem(refs[refID], refs, b, a);
-                        }
-                    }).catch(err => setResults(["Error", ...results]));
-            }
-        }
-        else {
-            setReferences(refs);
-            setResults([item, ...results]);
-        }
-    }
-    const generate = () => {
-        console.log("GENERATE");
-        if (!gen || gen.items.length === 0) { setResults(["👎 No items to choose from. Add items below!", ...results]); return; }
-        pickItem(gen.items.map(i => i.text), references, "", "");
-    }
-
-
-
-    useEffect(() => {
-        if (!gen) {
-            fetch(`/api/gen/${genName}`, { method: 'GET', headers: { Accept: 'application/json' } })
-            .then(res => res.json()).then(res => {
-                setGen({ info:res.list, items:res.items });
-                if (res.items.length === 0) setViewList(true);
-            });
-        }
-        else if (emojis.length === 0) {
-            var codes = gen.info.tags.map(t => t.split('-').map(p => parseInt(p, 16)));
-            while (codes.length > 5) {
-                const indexToRemove = getRandomInt(codes.length);
-                codes = codes.filter((_, i) => i !== indexToRemove);
-            }
-            setEmojis(shuffle(codes));
-        }
-        else if (results.length === 0 && Object.keys(references).length === 0) {
-            generate();
-        }
-    });
-
+    const [gen, results, generate, addItem] = useGenerator(genName, user);
+    const emojis = useEmojis(gen?.info, 3);
+    
     if (!gen || !gen.items || !gen.info) return <Loading>Loading...</Loading>
-
-    const addItem = item => {
-        console.log(item);
-        fetch(`/api/gen/${genName}/item`,{
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', Accept: 'application/json', token: user.token },
-                body:JSON.stringify({item})
-            })
-            .then(res => res.json()).then(res => {
-                console.log(res);
-                res.item.createdBy = user;
-                setGen({ info:gen.info, items:[...gen.items,res.item]});
-            });
-    };
 
     return (
         <MainArea>
             <GenName>{gen.info.name}</GenName>
-            <GenTags>{emojis.map(e => String.fromCodePoint(...e))}</GenTags>
+            <GenTags>{emojis}</GenTags>
             <GenUser>By {gen.info.createdBy.username}</GenUser>
             <Description>{gen.info.description}</Description>
             <Button style={{alignSelf:"center",padding:"16px 48px"}} onClick={() => generate()}>Generate</Button>

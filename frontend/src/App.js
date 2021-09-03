@@ -18,7 +18,8 @@ var theme = {
   highlight_dark: "#7d078f",
   main_overlay: "white",
   main_dark_overlay: "white",
-  background: "white"
+  background: "white",
+  background_text: "black"
 };
 
 
