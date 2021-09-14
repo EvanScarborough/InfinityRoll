@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import Button from '../general/Button';
 import { useParams } from "react-router-dom";
 import useGenerator from '../../hooks/Generator';
@@ -158,7 +159,9 @@ export default function Generator({ user }) {
             { viewList ?
                 <ItemList>
                     {gen.items.map((item, i) => <ListItem key={i} num={i+1} item={item.text} user={item.createdBy} />)}
-                    <AddListItem num={gen.items.length + 1} submit={addItem}/>
+                    {user && user.token ?
+                        <AddListItem num={gen.items.length + 1} submit={addItem}/> :
+                        <Description>Want to expand this list? <Link to="/login">You'll need an account!</Link></Description>}
                 </ItemList> :
                 <Description>{gen.items.length} Items</Description>
             }

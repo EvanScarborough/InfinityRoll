@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import Button from '../general/Button';
 import Picker from 'emoji-picker-react';
 import { useHistory } from "react-router-dom";
@@ -99,7 +100,13 @@ const WarningLabel = styled.p`
     padding: 8px;
 `;
 
-export default function CreateGenerator({user, cancel}) {
+const NeedAccountMessage = styled.p`
+    font-weight: bold;
+    margin: 32px 8px;
+    text-align: center;
+`;
+
+export default function CreateGenerator({user}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState([]);
@@ -139,6 +146,18 @@ export default function CreateGenerator({user, cancel}) {
                 if (error.hasOwnProperty("message")) setWarning(error.message);
             });
     };
+
+    if (!user || !user.token) {
+        return(
+            <MainArea>
+                <AreaLabel>Create Generator</AreaLabel>
+                <NeedAccountMessage>
+                    You'll need an account before you can create a generator! <Link to="/login">Get one here!</Link><br/>
+                    It's free and we don't even ask for an email!
+                </NeedAccountMessage>
+            </MainArea>
+        );
+    }
 
     return(
         <MainArea>
