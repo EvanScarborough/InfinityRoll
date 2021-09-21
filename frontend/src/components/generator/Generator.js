@@ -5,6 +5,7 @@ import Button from '../general/Button';
 import { useParams } from "react-router-dom";
 import useGenerator from '../../hooks/Generator';
 import useEmojis from '../../hooks/Emoji';
+import LikeCounter from '../general/LikeCounter';
 
 const MainArea = styled.div`
     width: calc(100% - 64px);
@@ -17,6 +18,11 @@ const MainArea = styled.div`
     display: flex;
     flex-direction: column;
     box-shadow: 0 8px 8px rgba(0,0,0,0.1);
+`;
+const DetailsArea = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 `;
 
 const Loading = styled.h2``;
@@ -37,7 +43,7 @@ const GenTags = styled.h2`
 `;
 const Description = styled.p`
     font-size: 1.2em;
-    padding: 8px;
+    padding: 32px 8px;
     text-align: center;
 `;
 
@@ -139,32 +145,39 @@ function AddListItem({ num, submit }) {
 export default function Generator({ user }) {
     let { genName } = useParams();
 
-    const [viewList, setViewList] = useState(false);
-    const [gen, results, generate, addItem] = useGenerator(genName, user);
+    const [gen, results, generate, addItem, toggleLike] = useGenerator(genName, user);
     const emojis = useEmojis(gen?.info, 3);
-    
-    if (!gen || !gen.items || !gen.info) return <Loading>Loading...</Loading>
 
+    useEffect(() => {
+        if (gen && results && results.length === 0){
+            generate();
+        }
+    });
+
+    if (!gen || !gen.items || !gen.info) return <Loading>Loading...</Loading>
     return (
         <MainArea>
             <GenName>{gen.info.name}</GenName>
-            <GenTags>{emojis}</GenTags>
-            <GenUser>By {gen.info.createdBy.username}</GenUser>
-            <Description>{gen.info.description}</Description>
-            <Button style={{alignSelf:"center",padding:"16px 48px"}} onClick={() => generate()}>Generate</Button>
+            <DetailsArea>
+                <GenTags>{emojis}</GenTags>
+                <GenUser>By {gen.info.createdBy.username}</GenUser>
+                <LikeCounter 
+                    likeCount={gen.info.upvotes.length}
+                    youLiked={gen.info.upvotes.includes(user.id)}
+                    allowLike={user !== null}
+                    toggleLike={toggleLike}/>
+                <Description>{gen.info.description}</Description>
+                <Button large onClick={() => generate()}>Generate</Button>
+            </DetailsArea>
             <GenArea>
                 {results.map((r,i) => <GenResult key={i}>{r}</GenResult>)}
             </GenArea>
-            <Button style={{alignSelf:"center",padding:"8px 32px"}} onClick={()=>setViewList(!viewList)}>View List Items</Button>
-            { viewList ?
-                <ItemList>
-                    {gen.items.map((item, i) => <ListItem key={i} num={i+1} item={item.text} user={item.createdBy} />)}
-                    {user && user.token ?
-                        <AddListItem num={gen.items.length + 1} submit={addItem}/> :
-                        <Description>Want to expand this list? <Link to="/login">You'll need an account!</Link></Description>}
-                </ItemList> :
-                <Description>{gen.items.length} Items</Description>
-            }
+            <ItemList>
+                {gen.items.map((item, i) => <ListItem key={i} num={i+1} item={item.text} user={item.createdBy} />)}
+                {user && user.token ?
+                    <AddListItem num={gen.items.length + 1} submit={addItem}/> :
+                    <Description>Want to expand this list? <Link to="/login">You'll need an account!</Link></Description>}
+            </ItemList>
         </MainArea>
     );
 }

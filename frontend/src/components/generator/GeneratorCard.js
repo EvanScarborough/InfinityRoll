@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { LinkButton } from '../general/Button';
 import useEmojis from '../../hooks/Emoji';
+import LikeCounter from '../general/LikeCounter';
 
 const CardArea = styled.div`
     display: inline-block;
@@ -39,7 +40,7 @@ const Description = styled.p`
     padding: 4px 8px;
 `;
 
-export default function GeneratorCard({ gen }) {
+export default function GeneratorCard({ gen, user }) {
     const emojis = useEmojis(gen, 3);
 
     return (
@@ -47,6 +48,7 @@ export default function GeneratorCard({ gen }) {
             <CardTitle>{gen.name}</CardTitle>
             <Tags>{emojis}</Tags>
             <AuthorCridit>by {gen.createdBy.username}</AuthorCridit>
+            <LikeCounter simplified likeCount={gen.upvotes.length}/>
             <Description>{gen.description}</Description>
             <LinkButton to={`/generator/${gen.unique_name}`} style={{display:"block", marginBottom:"8px"}}>Generate</LinkButton>
         </CardArea>

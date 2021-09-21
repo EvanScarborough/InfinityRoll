@@ -52,7 +52,7 @@ const SearchBox = styled.input`
 `;
 
 
-function GeneratorGroup({ title, items }) {
+function GeneratorGroup({ title, items, user }) {
     return (
         <GroupArea>
             <GroupTitle>{title}</GroupTitle>
@@ -61,6 +61,7 @@ function GeneratorGroup({ title, items }) {
                     <GeneratorCard
                         key={gen.unique_name}
                         gen={gen}
+                        user={user}
                     />
                 )}
             </GroupList>
@@ -99,7 +100,7 @@ export default function GeneratorList({ user }) {
                 <Button type="submit" onClick={e => search(e, searchTerm)} style={{borderRadius:"80px", padding:"0 16px"}}>Search</Button>
             </SearchForm>
             <LinkButton to="newgenerator">Create New Generator</LinkButton>
-            {generators.map((g,i)=><GeneratorGroup key={g.title} title={g.title} items={g.lists}/>)}
+            {generators.map((g,i)=><GeneratorGroup key={g.title} title={g.title} items={g.lists} user={user}/>)}
         </MainArea>
     );
 }

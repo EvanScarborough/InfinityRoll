@@ -77,6 +77,29 @@ router.post("/create", auth,
         }
     });
 
+router.post("/:name/like", auth, async (req, res) => {
+    try {
+        let genlist = await GenList.findOne({ unique_name: req.params.name });
+        if (!genlist) return req.status(400).json({message: "There is no generator with that name!"});
+        const index = genlist.upvotes.indexOf(req.user.id);
+        if (index > -1) {
+            // remove from list
+            genlist.upvotes.splice(index, 1);
+        }
+        else {
+            // add to list
+            genlist.upvotes.push(req.user.id);
+        }
+        await genlist.save();
+        return res.status(200).json({message:"Success", upvotes:genlist.upvotes});
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+});
+
 router.post("/:name/item", auth, [
         check("item", "Please enter a valid item").not().isEmpty()
     ], async (req, res) => {

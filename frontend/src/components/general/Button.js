@@ -5,7 +5,7 @@ const Button = styled.button`
     border: none;
     font-size: 1.2em;
     color: ${props => props.theme.main_overlay};
-    padding: 8px;
+    padding: ${props => props.large ? "16px 48px" : "8px"};
     background-color: ${props => props.theme.main};
     border-radius: 4px;
     cursor: pointer;
@@ -30,7 +30,7 @@ const LinkButton = styled(Link)`
     border: none;
     font-size: 1.2em;
     color: ${props => props.theme.main_overlay};
-    padding: 8px;
+    padding: ${props => props.large ? "16px 48px" : "8px"};
     min-width: 100px;
     text-align: center;
     text-decoration: none;

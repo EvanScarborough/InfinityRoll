@@ -44,7 +44,6 @@ function useGenerator(name, user) {
     }
 
     const generate = () => {
-        console.log("GENERATE");
         if (!gen || gen.items.length === 0) { setResults(["👎 No items to choose from. Add items below!", ...results]); return; }
         pickItem(gen.items.map(i => i.text), references, "", "");
     }
@@ -66,13 +65,29 @@ function useGenerator(name, user) {
                 body:JSON.stringify({item})
             })
             .then(res => res.json()).then(res => {
-                console.log(res);
                 res.item.createdBy = user;
                 setGen({ info: gen.info, items: [...gen.items, res.item]});
             });
     };
 
-    return [gen, results, generate, addItem];
+    const toggleLike = () => {
+        if (!user) return;
+        fetch(`/api/gen/${name}/like`, {
+			method: 'POST',
+			headers: { Accept: "application/json", token: user.token }
+		}).then(res => res.json()).then(
+			(result) => {
+				if (result.hasOwnProperty("upvotes")) {
+                    setGen({...gen, info: {...gen.info, upvotes: result.upvotes}});
+				}
+			},
+			(error) => {
+				console.log(error);
+			}
+		);
+    }
+
+    return [gen, results, generate, addItem, toggleLike];
 }
 
 
