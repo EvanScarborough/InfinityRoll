@@ -8,18 +8,46 @@ const User = require("../models/user");
 const GenList = require("../models/genlist");
 const GenItem = require("../models/genitem");
 const auth = require("../middleware/auth");
+const optionalAuth = require("../middleware/optionalAuth");
 
 
 
-router.get("/", async (req, res) => {
+router.get("/", optionalAuth, async (req, res) => {
     searchTerm = req.query.search;
-
     if (searchTerm) {
         let genlists = await GenList.find({$text: {$search: searchTerm}}).populate('createdBy', 'username');
         return res.status(200).json({groups:[{title:"Search Results",lists:genlists}]});
     }
-    let genlists = await GenList.find().populate('createdBy', 'username');
-    return res.status(200).json({groups:[{title:"All",lists:genlists}]});
+
+    let groups = [];
+    if (req.user) { // if you are logged in...
+        // generators you created
+        let mygen = await GenList.find({ createdBy: req.user.id }).populate('createdBy', 'username');
+        if (mygen && mygen.length > 0) groups.push({title:"My Generators",lists:mygen});
+        // liked
+        let liked = await GenList.find({ upvotes: req.user.id }).populate('createdBy', 'username');
+        if (liked && liked.length > 0) groups.push({title:"Liked",lists:liked});
+    }
+
+    // popular generators
+    let popular = await GenList.find().sort({ "upvoteCount": -1 }).limit(6).populate('createdBy', 'username');
+    groups.push({title:"Popular",lists:popular});
+
+    // random generators
+    let count = await GenList.countDocuments();
+    let skips = [];
+    let random = [];
+    while (skips.length < 3) {
+        const s = Math.floor(Math.random() * count);
+        if (!skips.includes(s)) {
+            skips.push(s);
+            const gen = await GenList.findOne().skip(s).populate('createdBy', 'username');
+            random.push(gen);
+        }
+    }
+    groups.push({title:"Random",lists:random});
+
+    return res.status(200).json({groups});
 });
 
 router.get("/:name", async(req, res) => {
@@ -85,10 +113,12 @@ router.post("/:name/like", auth, async (req, res) => {
         if (index > -1) {
             // remove from list
             genlist.upvotes.splice(index, 1);
+            genlist.upvoteCount--;
         }
         else {
             // add to list
             genlist.upvotes.push(req.user.id);
+            genlist.upvoteCount++;
         }
         await genlist.save();
         return res.status(200).json({message:"Success", upvotes:genlist.upvotes});

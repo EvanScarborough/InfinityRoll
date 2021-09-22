@@ -44,6 +44,10 @@ const GenListSchema = mongoose.Schema({
     },
     upvotes: {
         type: [mongoose.Schema.Types.ObjectId]
+    },
+    upvoteCount: {
+        type: Number,
+        default: 0
     }
 });
 

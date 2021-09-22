@@ -77,7 +77,7 @@ export default function GeneratorList({ user }) {
 
     useEffect(() => {
         if (generators.length !== 0) return;
-        fetch("api/gen",{ method: 'GET', headers: { Accept: "application/json" }})
+        fetch("api/gen",{ method: 'GET', headers: { Accept: "application/json", token: user?.token }})
             .then(res => res.json()).then(res => {
                 console.log(res);
                 setGenerators(res.groups);
