@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Button from '../general/Button';
+import Button from '../components/general/Button';
 import Picker from 'emoji-picker-react';
 import { useHistory } from "react-router-dom";
 
@@ -106,7 +106,7 @@ const NeedAccountMessage = styled.p`
     text-align: center;
 `;
 
-export default function CreateGenerator({user}) {
+export default function CreateGeneratorPage({user}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState([]);

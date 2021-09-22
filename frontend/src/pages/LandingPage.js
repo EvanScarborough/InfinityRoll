@@ -64,7 +64,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function HomePage() {
+export default function LandingPage() {
     const [messageState, setMessageState] = useState({flipped:false,message:[
         "Hello, welcome to InfinityRoll, the crowd-sourced random generator!",
         "Goodbye"

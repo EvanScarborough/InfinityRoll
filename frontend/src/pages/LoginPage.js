@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Button from '../general/Button';
+import Button from '../components/general/Button';
 import { useHistory } from "react-router-dom";
 
 const LoginArea = styled.div`
@@ -66,7 +66,7 @@ const WarningLabel = styled.p`
 
 
 
-export default function Login({ login }) {
+export default function LoginPage({ login }) {
     const [register, setRegister] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");

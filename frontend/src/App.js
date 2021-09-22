@@ -3,12 +3,14 @@ import {ThemeProvider} from 'styled-components';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Navbar from './components/navigation/Navbar';
-import HomePage from './components/home/HomePage';
-import Login from './components/user/Login';
 import Button from './components/general/Button';
-import GeneratorPage from './components/generator/GeneratorPage';
-import CreateGenerator from './components/generator/CreateGenerator';
 import Footer from './components/navigation/Footer';
+
+import LandingPage from './pages/LandingPage';
+import LoginPage from './pages/LoginPage';
+import GeneratorListingPage from './pages/GeneratorListingPage';
+import CreateGeneratorPage from './pages/CreateGeneratorPage';
+
 
 var theme = {
   main: "#16b897",
@@ -62,26 +64,22 @@ export default function App() {
 		<ThemeProvider theme={theme}>
 			<Router>
 				<Navbar user={user}/>
-
 				<Switch>
 					<Route path="/newgenerator">
-						<CreateGenerator user={user}/>
+						<CreateGeneratorPage user={user}/>
 					</Route>
 					<Route path="/generator">
-						<GeneratorPage user={user}/>
-					</Route>
-					<Route path="/dice">
-						<h1>Dice</h1>
+						<GeneratorListingPage user={user}/>
 					</Route>
 					<Route path="/user">
 						<h1>User</h1>
 						<Button onClick={()=>logout()}>Log Out</Button>
 					</Route>
 					<Route path="/login">
-						<Login login={login}/>
+						<LoginPage login={login}/>
 					</Route>
 					<Route path="/">
-						<HomePage />
+						<LandingPage />
 					</Route>
 				</Switch>
 

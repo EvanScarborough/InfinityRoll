@@ -1,17 +1,17 @@
 import React from 'react';
 import { Switch, Route, useRouteMatch } from "react-router-dom";
 
-import Generator from './Generator';
-import GeneratorList from './GeneratorList';
+import GeneratorPage from './GeneratorPage';
+import GeneratorList from '../components/generator/GeneratorList';
 
 
-export default function GeneratorPage({ user }) {
+export default function GeneratorListingPage({ user }) {
     let match = useRouteMatch();
 
     return(
         <Switch>
             <Route path={`${match.path}/:genName`}>
-                <Generator user={user} />
+                <GeneratorPage user={user} />
             </Route>
             <Route path={match.path}>
                 <GeneratorList user={user} />

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Button from '../general/Button';
+import Button from '../components/general/Button';
 import { useParams } from "react-router-dom";
-import useGenerator from '../../hooks/Generator';
-import useEmojis from '../../hooks/Emoji';
-import LikeCounter from '../general/LikeCounter';
+import useGenerator from '../hooks/Generator';
+import useEmojis from '../hooks/Emoji';
+import LikeCounter from '../components/general/LikeCounter';
 
 const MainArea = styled.div`
     width: calc(100% - 64px);
@@ -142,7 +142,7 @@ function AddListItem({ num, submit }) {
     );
 }
 
-export default function Generator({ user }) {
+export default function GeneratorPage({ user }) {
     let { genName } = useParams();
 
     const [gen, results, generate, addItem, toggleLike] = useGenerator(genName, user);
