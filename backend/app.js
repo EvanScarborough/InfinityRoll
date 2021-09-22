@@ -21,9 +21,11 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(express.json());
 app.use(cors());
 
+// Routes
 app.use("/api/user", user);
 app.use("/api/gen", gen);
 
+// Serve static files
 // app.use(express.static(path.join(__dirname, '..', 'client', 'public')));
 
 // app.get('/', (req, res) => {

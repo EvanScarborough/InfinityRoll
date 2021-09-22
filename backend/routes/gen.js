@@ -1,20 +1,26 @@
 const express = require("express");
 const { check, validationResult} = require("express-validator");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
 
-const User = require("../models/user");
-const GenList = require("../models/genlist");
-const GenItem = require("../models/genitem");
+const GenList = require("../models/GenList");
+const GenItem = require("../models/GenItem");
 const auth = require("../middleware/auth");
 const optionalAuth = require("../middleware/optionalAuth");
 
 
-
+/**
+ * /api/gen/
+ * Returns a list of generator groups to be displayed on the main generator page.
+ * If the user is logged in, then this will return all of the generators they created
+ * as well as all the generators they liked.
+ * This also returns 3 randomly selected generators just for random fun.
+ * If there is a search query, then it will instead return search results.
+ */
 router.get("/", optionalAuth, async (req, res) => {
+    // check if there is a search query
     searchTerm = req.query.search;
     if (searchTerm) {
+        // if there is, query the text index in the database and return the results
         let genlists = await GenList.find({$text: {$search: searchTerm}}).populate('createdBy', 'username');
         return res.status(200).json({groups:[{title:"Search Results",lists:genlists}]});
     }
@@ -50,6 +56,11 @@ router.get("/", optionalAuth, async (req, res) => {
     return res.status(200).json({groups});
 });
 
+/**
+ * /api/gen/{generator name}
+ * Returns all info about a specific generator including both the info about the list
+ * and all of the list items
+ */
 router.get("/:name", async(req, res) => {
     let genlist = await GenList.findOne({ unique_name: req.params.name }).populate('createdBy', 'username');
     let genitems = await GenItem.find({ listName: req.params.name }).sort('createdAt').populate('createdBy', 'username');
@@ -57,12 +68,16 @@ router.get("/:name", async(req, res) => {
 });
 
 
-
+/**
+ * /api/gen/create
+ * Create a new generator. 
+ */
 router.post("/create", auth,
     [
         check("name", "Please enter a valid name").not().isEmpty()
     ],
     async (req, res) => {
+        // check validation errors (no name supplied)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -72,8 +87,10 @@ router.post("/create", auth,
         }
         
         const { name, description, tags } = req.body;
+        // create the unique_name. This is just an all lowercase version of the name with '_' instead of ' '
         const unique_name = name.toLowerCase().replace(/ /g, "_");
 
+        // validate the unique_name to make sure it is only letters, numbers, and underscores and doesn't start with a number
         const regex = /[^a-z0-9\_]/g;
         if (regex.test(unique_name)) {
             return req.status(400).json({message:"Name can only contain letters, numbers, spaces, and underscores"});
@@ -82,11 +99,12 @@ router.post("/create", auth,
             return req.status(400).json({message:"Name must start with a letter"});
         }
 
-
         try {
+            // check if that name already exists
             let genlist = await GenList.findOne({ unique_name });
             if (genlist) return res.status(400).json({ message: "There is already a generator with that name!" });
 
+            // if not, create the new generator and save it
             genlist = new GenList({
                 unique_name,
                 name,
@@ -94,7 +112,6 @@ router.post("/create", auth,
                 tags,
                 createdBy: req.user.id
             });
-
             await genlist.save();
             return res.status(200).json({message: "Successfully created a new generator", id: unique_name});
         } catch (e) {
@@ -103,23 +120,32 @@ router.post("/create", auth,
                 message: "Server error"
             });
         }
-    });
+    }
+);
 
+/**
+ * /api/gen/{generator name}/like
+ * Like or unlike a generator. It just toggles back and forth and returns the new list of upvotes.
+ * Make sure to maintain the upvoteCount
+ */
 router.post("/:name/like", auth, async (req, res) => {
     try {
+        // make sure the generator exists
         let genlist = await GenList.findOne({ unique_name: req.params.name });
         if (!genlist) return req.status(400).json({message: "There is no generator with that name!"});
+        // determine whether the user already liked the generator
         const index = genlist.upvotes.indexOf(req.user.id);
         if (index > -1) {
-            // remove from list
+            // the user already liked it, so remove from list
             genlist.upvotes.splice(index, 1);
             genlist.upvoteCount--;
         }
         else {
-            // add to list
+            // the user doesn't already like it, so add to list
             genlist.upvotes.push(req.user.id);
             genlist.upvoteCount++;
         }
+        // save the generator
         await genlist.save();
         return res.status(200).json({message:"Success", upvotes:genlist.upvotes});
     } catch (e) {
@@ -130,9 +156,14 @@ router.post("/:name/like", auth, async (req, res) => {
     }
 });
 
+/**
+ * /auth/gen/{generator name}/item
+ * Add an item to the generator list.
+ */
 router.post("/:name/item", auth, [
         check("item", "Please enter a valid item").not().isEmpty()
     ], async (req, res) => {
+        // make sure the item is not empty
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -141,13 +172,14 @@ router.post("/:name/item", auth, [
             });
         }
         const { item } = req.body;
-
         try {
+            // add the gen item. no need to check for duplicates or anything
             let genitem = new GenItem({
                 listName: req.params.name,
                 createdBy: req.user.id,
                 text: item
             });
+            // save the item
             await genitem.save();
             return res.status(200).json({message: "Successfully added a new item", item: genitem});
         } catch (e) {
@@ -156,7 +188,8 @@ router.post("/:name/item", auth, [
                 message: "Server error"
             });
         }
-    });
+    }
+);
 
 
 module.exports = router;

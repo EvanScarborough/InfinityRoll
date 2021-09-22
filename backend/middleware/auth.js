@@ -1,5 +1,10 @@
 const jwt = require("jsonwebtoken");
 
+/**
+ * auth middleware
+ * Authenticates the user by validating the provided jwt.
+ * If the jwt is not valid or not provided, an error will be returned
+ */
 module.exports = function(req, res, next) {
     const token = req.header("token");
     if (!token) return res.status(401).json({ message: "Auth Error" });
