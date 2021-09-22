@@ -1,66 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import Container from '../components/general/Container';
 import Button from '../components/general/Button';
+import Form, { FormLabel, FormInput, FormTextArea, FormMessage } from '../components/general/Form';
 import Picker from 'emoji-picker-react';
 import { useHistory } from "react-router-dom";
-
-
-const MainArea = styled.div`
-    width: calc(100% - 46px);
-    background-color: ${props => props.theme.background};
-    max-width: 800px;
-    margin: 40px auto 16px auto;
-    margin-bottom: 64px;
-    border: solid 5px ${props => props.theme.main};
-    border-radius: 16px;
-    box-shadow: 0 8px 8px rgba(0,0,0,0.1);
-    display: flex;
-    flex-direction: column;
-`;
-
-const AreaLabel = styled.h1`
-    background-color: ${props => props.theme.main};
-    color: ${props => props.theme.main_overlay};
-    text-align: center;
-    padding: 8px;
-`;
-
-const CreateGenForm = styled.form`
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    overflow: scroll;
-`;
-
-const FormLabel = styled.label`
-    font-size: 1.2em;
-`;
-
-const FormInput = styled.input`
-    font-size: 1.2em;
-    border: solid 3px ${props => props.theme.main};
-    border-radius: 4px;
-    margin-bottom: 24px;
-    padding: 8px;
-    &:focus {
-        border: solid 3px ${props => props.theme.highlight};
-        outline: none;
-    }
-`;
-const FormTextArea = styled.textarea`
-    font-size: 1.2em;
-    border: solid 3px ${props => props.theme.main};
-    border-radius: 4px;
-    margin-bottom: 24px;
-    padding: 8px;
-    resize: none;
-    font-family: inherit;
-    &:focus {
-        border: solid 3px ${props => props.theme.highlight};
-        outline: none;
-    }
-`;
 
 const SymbolArea = styled.div`
     display: grid;
@@ -89,21 +34,6 @@ const SymbolButton = styled.button`
     &:hover{
         background-color: ${props => props.theme.main_wash};
     }
-`;
-
-const WarningLabel = styled.p`
-    background-color: #faa;
-    color: #a00;
-    font-weight: bold;
-    border-radius: 4px;
-    margin: 8px;
-    padding: 8px;
-`;
-
-const NeedAccountMessage = styled.p`
-    font-weight: bold;
-    margin: 32px 8px;
-    text-align: center;
 `;
 
 export default function CreateGeneratorPage({user}) {
@@ -149,21 +79,19 @@ export default function CreateGeneratorPage({user}) {
 
     if (!user || !user.token) {
         return(
-            <MainArea>
-                <AreaLabel>Create Generator</AreaLabel>
-                <NeedAccountMessage>
+            <Container title="Create Generator">
+                <FormMessage>
                     You'll need an account before you can create a generator! <Link to="/login">Get one here!</Link><br/>
                     It's free and we don't even ask for an email!
-                </NeedAccountMessage>
-            </MainArea>
+                </FormMessage>
+            </Container>
         );
     }
 
     return(
-        <MainArea>
-            <AreaLabel>Create Generator</AreaLabel>
-            {warning && <WarningLabel>{warning}</WarningLabel>}
-            <CreateGenForm>
+        <Container title="Create Generator">
+            {warning && <FormMessage warning>{warning}</FormMessage>}
+            <Form>
                 <FormLabel htmlFor="name">Name</FormLabel>
                 <FormInput id="name" value={name} onChange={event => setName(event.target.value)}></FormInput>
                 <FormLabel htmlFor="description">Description</FormLabel>
@@ -176,7 +104,7 @@ export default function CreateGeneratorPage({user}) {
                     <Picker native onEmojiClick={onEmojiClick} pickerStyle={{minHeight:"300px", width:"100%", alignSelf:"center", marginBottom:"16px"}}/>
                 </SymbolArea>
                 <Button onClick={e => createGenerator(e)}>Create</Button>
-            </CreateGenForm>
-        </MainArea>
+            </Form>
+        </Container>
     );
 }

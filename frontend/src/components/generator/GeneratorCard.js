@@ -40,7 +40,7 @@ const Description = styled.p`
     padding: 4px 8px;
 `;
 
-export default function GeneratorCard({ gen, user }) {
+export default function GeneratorCard({ gen }) {
     const emojis = useEmojis(gen, 3);
 
     return (
