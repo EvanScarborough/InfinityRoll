@@ -1,6 +1,11 @@
 import * as React from "react";
 import { withTheme } from 'styled-components';
 
+/**
+ * Displays the logo svg
+ * @param {*} props - add additional styles
+ * @returns The logo
+ */
 function SvgLogo(props) {
   return (
     <svg

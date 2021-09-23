@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import { Link } from "react-router-dom";
 
+/**
+ * A stylized button that pops up when you hover it
+ */
 const Button = styled.button`
     border: none;
     font-size: 1.2em;
@@ -25,6 +28,9 @@ const Button = styled.button`
     }
 `;
 
+/**
+ * A link that looks like a button. Useful for internal navigation
+ */
 const LinkButton = styled(Link)`
     display: inline-block;
     border: none;

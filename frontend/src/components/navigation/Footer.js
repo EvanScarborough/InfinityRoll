@@ -14,6 +14,10 @@ const FooterComment = styled.p`
     color: ${props => props.theme.main};
 `;
 
+/**
+ * The footer to display on every page
+ * @returns a component
+ */
 export default function Footer() {
     return (
         <FooterArea>

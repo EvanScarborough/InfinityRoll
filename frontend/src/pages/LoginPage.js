@@ -16,7 +16,11 @@ const TypeSwitchComment = styled.p`
     margin-bottom: 8px;
 `;
 
-
+/**
+ * The login or signup page
+ * @param {function} props.login - the function to call when after you've logged in 
+ * @returns a component
+ */
 export default function LoginPage({ login }) {
     const [register, setRegister] = useState(false);
     const [username, setUsername] = useState("");
@@ -27,19 +31,20 @@ export default function LoginPage({ login }) {
     const history = useHistory();
 
     if (register) {
+        // create an account
         const createAccount = (e) => {
             e.preventDefault();
+            // check the password confirm matches
             if (password === passwordConfirm) {
-                console.log({username, password});
                 fetch("api/user/signup", {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Accept: "application/json" },
                     body: JSON.stringify({username, password})
                 }).then(res => res.json()).then(
                     (result) => {
-                        console.log(result);
                         if (result.hasOwnProperty("message")) setWarning(result.message);
                         if (result.hasOwnProperty("token")) {
+                            // if it returns a token, then you know it worked. call the login function and go to the /generator page
                             login(result.token);
                             history.push("/generator");
                         }
@@ -54,7 +59,6 @@ export default function LoginPage({ login }) {
                 setWarning("Password confirmation did not match!");
             }
         }
-
         return(
             <Container title="Sign Up" small>
                 {warning !== "" ? <FormMessage warning>{warning}</FormMessage> : null}
@@ -75,6 +79,7 @@ export default function LoginPage({ login }) {
         );
     }
     else {
+        // log in
         const logIn = (e) => {
             e.preventDefault();
             fetch("api/user/login", {
@@ -83,9 +88,9 @@ export default function LoginPage({ login }) {
                 body: JSON.stringify({username, password})
             }).then(res => res.json()).then(
                 (result) => {
-                    console.log(result);
                     if (result.hasOwnProperty("message")) setWarning(result.message);
                     if (result.hasOwnProperty("token")) {
+                        // if it returns a token, then you know it worked. call the login function and go to the /generator page
                         login(result.token);
                         history.push("/generator");
                     }
@@ -96,7 +101,6 @@ export default function LoginPage({ login }) {
                 }
             );
         }
-
         return(
             <Container title="Log In" small>
                 {warning !== "" ? <FormMessage warning>{warning}</FormMessage> : null}

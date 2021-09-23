@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import Container from '../components/general/Container';
 import Button from '../components/general/Button';
 import { useParams } from "react-router-dom";
-import useGenerator from '../hooks/Generator';
-import useEmojis from '../hooks/Emoji';
+import useGenerator from '../hooks/useGenerator';
+import useEmojis from '../hooks/useEmojis';
 import LikeCounter from '../components/general/LikeCounter';
 import GeneratorItemList from '../components/generator/GeneratorItemList';
 import GeneratorResultArea from '../components/generator/GeneratorResultArea';
@@ -32,13 +32,18 @@ const Description = styled.p`
     text-align: center;
 `;
 
-
+/**
+ * Displays a specific generator and allows you to generate from it
+ * @param {object} props.user - the logged in user 
+ * @returns a component
+ */
 export default function GeneratorPage({ user }) {
     let { genName } = useParams();
 
     const [gen, results, generate, addItem, toggleLike] = useGenerator(genName, user);
     const emojis = useEmojis(gen?.info, 3);
 
+    // generate an item right when you load
     useEffect(() => {
         if (gen && results && results.length === 0){
             generate();

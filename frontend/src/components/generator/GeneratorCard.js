@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { LinkButton } from '../general/Button';
-import useEmojis from '../../hooks/Emoji';
+import useEmojis from '../../hooks/useEmojis';
 import LikeCounter from '../general/LikeCounter';
 
 const CardArea = styled.div`
@@ -40,9 +40,13 @@ const Description = styled.p`
     padding: 4px 8px;
 `;
 
+/**
+ * Displays a little card with information about a generator
+ * @param {*} props.gen - the generator 
+ * @returns a component
+ */
 export default function GeneratorCard({ gen }) {
     const emojis = useEmojis(gen, 3);
-
     return (
         <CardArea>
             <CardTitle>{gen.name}</CardTitle>

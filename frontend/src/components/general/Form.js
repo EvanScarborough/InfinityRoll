@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 
+/**
+ * A styled form
+ */
 const Form = styled.form`
     padding: 20px;
     display: flex;

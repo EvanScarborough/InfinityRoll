@@ -20,6 +20,11 @@ const GenResult = styled.p`
     }
 `;
 
+/**
+ * Renders the area to show a list of generated results
+ * @param {array} props.results - a list of all the results to display 
+ * @returns a component
+ */
 export default function GeneratorResultArea({ results }) {
     return (
         <GenArea>

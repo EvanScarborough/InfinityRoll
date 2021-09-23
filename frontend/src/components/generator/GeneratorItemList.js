@@ -82,6 +82,13 @@ function AddGeneratorListItem({ num, submit }) {
     );
 }
 
+/**
+ * Displays the list of items able to be selected by a generator
+ * @param {array} props.items - the list of all the items
+ * @param {object} props.user - the user to check if the add item form should be included
+ * @param {function} props.addItem - a function to call when the add item form is submitted with the item as the argument
+ * @returns a component
+ */
 export default function GeneratorItemList({ items, user, addItem }) {
     return (
         <ItemList>

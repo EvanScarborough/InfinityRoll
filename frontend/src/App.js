@@ -11,7 +11,7 @@ import LoginPage from './pages/LoginPage';
 import GeneratorListingPage from './pages/GeneratorListingPage';
 import CreateGeneratorPage from './pages/CreateGeneratorPage';
 
-
+// the theme used by styled components
 var theme = {
   main: "#16b897",
   main_dark: "#03362b",
@@ -24,10 +24,14 @@ var theme = {
   background_text: "black"
 };
 
-
+/**
+ * The base-level component that handles all routing
+ * @returns a component
+ */
 export default function App() {
 	const [user, setUser] = useState(null);
 
+	// use the jwt to authenticate and get info about the user
 	const login = (token) => {
 		fetch("/api/user/me", {
 			method: 'GET',
@@ -35,8 +39,6 @@ export default function App() {
 		}).then(res => res.json()).then(
 			(result) => {
 				result.token = token;
-				console.log('logged in as:');
-				console.log(result);
 				if (result.hasOwnProperty("username")) {
 					localStorage.setItem('token', token);
 					setUser(result);
@@ -48,11 +50,13 @@ export default function App() {
 		);
 	}
 
+	// log out and clear the localstorage
 	const logout = () => {
 		localStorage.removeItem('token');
 		setUser(null);
 	}
 
+	// upon starting up, check if there is a token in localstorage and use it to log in
 	useEffect(() => {
 		const token = localStorage.getItem('token');
 		if (!user && token) {

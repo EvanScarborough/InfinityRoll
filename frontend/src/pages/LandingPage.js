@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from "react-router-dom";
 import ReactCardFlip from 'react-card-flip';
+import { getRandomInt } from '../utils/random';
 
 const MainArea = styled.div`
     width: 100%;
@@ -59,17 +60,18 @@ const Paragraph = styled.p`
 
 
 
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
-
+/**
+ * The landing page to display on the root address. Contains some info about InfinityRoll
+ * @returns a component
+ */
 export default function LandingPage() {
     const [messageState, setMessageState] = useState({flipped:false,message:[
         "Hello, welcome to InfinityRoll, the crowd-sourced random generator!",
         "Goodbye"
     ]});
 
+    // these are the options to combine into the greeting on the landing page.
+    // one option from each of the 3 arrays will be chosen and combined
     const options = [
         [
             "Hello",
@@ -123,19 +125,23 @@ export default function LandingPage() {
         ]
     ];
 
+    // function to generate a random greeting
     const generateGreeting = () => {
         return options.map(o => o[getRandomInt(o.length)]).join('');
     }
 
+    // set a timer to generate a new greeting on an interval
+    // basically how this works is there's a message on both sides of the card and it keeps
+    // updating the back side and then flipping. this makes sure the old message doesn't disappear suddenly
     useEffect(() => {
         const interval = setInterval(() => {
             setMessageState(s => {
                 if (s.flipped) return {flipped:false,message:[generateGreeting(),s.message[1]]};
                 return {flipped:true, message:[s.message[0],generateGreeting()]}
             });
-        }, 4200);
+        }, 4000);
         return () => clearInterval(interval);
-      }, []);
+    }, []);
 
     return (
         <MainArea>

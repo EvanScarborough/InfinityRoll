@@ -17,6 +17,17 @@ const LikeCounterText = styled.p`
     margin: 0 16px;
 `;
 
+/**
+ * Render a small box with the number of likes.
+ * The like count will be displayed in a simplified format like "1.2k"
+ * If allowLike==true, there will be a button to like it
+ * @param {boolean} props.simplified - Simplifies the display to just be like "👍45"
+ * @param {number} props.likeCount - The number of likes
+ * @param {boolean} props.youLiked - Whether or not the logged in user liked it
+ * @param {boolean} props.allowLike - Include the button to like it
+ * @param {function} props.toggleLike - Function called when you click the like button
+ * @returns a component
+ */
 export default function LikeCounter({ simplified, likeCount, youLiked, allowLike, toggleLike }) {
     if (simplified) {
         return (

@@ -1,16 +1,24 @@
 import { useState, useEffect } from 'react';
+import { getRandomInt } from '../utils/random';
 
-
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
-
-
+/**
+ * A react hook to handle all things related to generation and interfacing with generators
+ * Returns an array: [gen, results, generate, addItem, toggleLike]
+ * gen - the generator
+ * results - an array of the results
+ * generate - a function to call to generate
+ * addItem - function to add an item to the generator
+ * toggleLike - a function that toggles liking the generator
+ * @param {string} name - the name of the generator
+ * @param {object} user - the logged in user
+ * @returns an array: [gen, results, generate, addItem, toggleLike]
+ */
 function useGenerator(name, user) {
     const [gen, setGen] = useState(null);
     const [references, setReferences] = useState({});
     const [results, setResults] = useState([]);
 
+    // picks an item and then recurses if there are any generation references
     const pickItem = (list, refs, before, after) => {
         var item = before + list[getRandomInt(list.length)] + after;
         
@@ -43,11 +51,13 @@ function useGenerator(name, user) {
         }
     }
 
+    // function that generates an item
     const generate = () => {
         if (!gen || gen.items.length === 0) { setResults(["👎 No items to choose from. Add items below!", ...results]); return; }
         pickItem(gen.items.map(i => i.text), references, "", "");
     }
 
+    // get the generation info and items
     useEffect(() => {
         if (!gen) {
             fetch(`/api/gen/${name}`, { method: 'GET', headers: { Accept: 'application/json' } })
@@ -57,6 +67,7 @@ function useGenerator(name, user) {
         }
     });
 
+    // function to add an item to the generator. it updates the local and remote copy
     const addItem = item => {
         console.log(item);
         fetch(`/api/gen/${name}/item`,{
@@ -70,6 +81,7 @@ function useGenerator(name, user) {
             });
     };
 
+    // likes or unlikes the generator
     const toggleLike = () => {
         if (!user) return;
         fetch(`/api/gen/${name}/like`, {

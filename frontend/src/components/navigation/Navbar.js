@@ -108,7 +108,12 @@ const HamburgerNavItem = styled.li`
     margin: 4px;
 `;
 
-export default function Navbar({user}) {
+/**
+ * Renders the navbar at the top of every page. Includes the logo and navigation links
+ * @param {object} props.user - the logged in user to display their name
+ * @returns a component
+ */
+export default function Navbar({ user }) {
     const [ expanded, setExpanded ] = useState(false);
 
     var items = [

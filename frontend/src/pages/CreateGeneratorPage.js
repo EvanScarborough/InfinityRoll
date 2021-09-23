@@ -36,7 +36,12 @@ const SymbolButton = styled.button`
     }
 `;
 
-export default function CreateGeneratorPage({user}) {
+/**
+ * The page with a form to create a new generator
+ * @param {object} props.user - the logged in user (must be logged in to create a generator)
+ * @returns a component
+ */
+export default function CreateGeneratorPage({ user }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [tags, setTags] = useState([]);
@@ -44,6 +49,7 @@ export default function CreateGeneratorPage({user}) {
 
     const history = useHistory();
 
+    // the function to handle adding or removing an emoji from the tag list
     const onEmojiClick = (event, emoji) => {
         event.preventDefault();
         const index = tags.findIndex(t => t.unified === emoji.unified);
@@ -55,6 +61,7 @@ export default function CreateGeneratorPage({user}) {
         }
     };
 
+    // the function called when you submit the form
     const createGenerator = (e) => {
         e.preventDefault();
         fetch("api/gen/create",{
@@ -65,6 +72,7 @@ export default function CreateGeneratorPage({user}) {
             result => {
                 console.log(result);
                 if (result.hasOwnProperty("id")) {
+                    // jump to the newly created generator
                     history.push(`generator/${result.id}`);
                 }
                 else if (result.hasOwnProperty("message")) {
@@ -77,6 +85,7 @@ export default function CreateGeneratorPage({user}) {
             });
     };
 
+    // if you're not logged in, just show a message that you need to be logged in to create a generator
     if (!user || !user.token) {
         return(
             <Container title="Create Generator">

@@ -20,6 +20,13 @@ const ContainerTitle = styled.h1`
     padding: 8px;
 `;
 
+/**
+ * Renders a card-like container with a title at the top
+ * @param {string} props.title - A title to put above the container
+ * @param {boolean} props.small - Make the container max-width thinner
+ * @param {*} props.children - The things inside the container
+ * @returns a container
+ */
 export default function Container({ title, small, children }) {
     return (
         <ContainerArea width={small ? 500 : 800}>
