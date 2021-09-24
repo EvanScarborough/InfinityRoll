@@ -19,6 +19,7 @@ const DetailsArea = styled.div`
     align-items: center;
 `;
 const CreatedBy = styled.h2`
+    color: ${props => props.theme.background_text};
     text-align: center;
     padding: 8px;
 `;
@@ -27,6 +28,7 @@ const GenTags = styled.h2`
     font-size: 2em;
 `;
 const Description = styled.p`
+    color: ${props => props.theme.background_text};
     font-size: 1.2em;
     padding: 32px 8px;
     text-align: center;

@@ -13,6 +13,7 @@ const TypeSwitchArea = styled.div`
 `;
 
 const TypeSwitchComment = styled.p`
+    color: ${props => props.theme.background_text};
     margin-bottom: 8px;
 `;
 

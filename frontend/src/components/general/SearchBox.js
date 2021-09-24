@@ -18,6 +18,8 @@ const SearchInput = styled.input`
     padding: 8px;
     margin-right: 8px;
     outline: none;
+    background-color: ${props => props.theme.background};
+    color: ${props => props.theme.background_text};
     &:focus{
         border-color: ${props => props.theme.highlight};
     }

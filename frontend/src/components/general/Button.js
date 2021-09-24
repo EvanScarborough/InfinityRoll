@@ -25,6 +25,7 @@ const Button = styled.button`
         background-color: ${props => props.theme.highlight_dark};
         transform: translateY(1px);
         box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        transition: background-color .05s, transform .05s, box-shadow .05s;
     }
 `;
 
@@ -37,10 +38,8 @@ const LinkButton = styled(Link)`
     font-size: 1.2em;
     color: ${props => props.theme.main_overlay};
     padding: ${props => props.large ? "16px 48px" : "8px"};
-    min-width: 100px;
     text-align: center;
     text-decoration: none;
-    margin: 4px 8px;
     background-color: ${props => props.theme.main};
     border-radius: 4px;
     cursor: pointer;
@@ -57,6 +56,7 @@ const LinkButton = styled(Link)`
         background-color: ${props => props.theme.highlight_dark};
         transform: translateY(1px);
         box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        transition: background-color .05s, transform .05s, box-shadow .05s;
     }
 `;
 

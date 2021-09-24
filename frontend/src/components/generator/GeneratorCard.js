@@ -33,10 +33,12 @@ const Tags = styled.p`
 `;
 
 const AuthorCridit = styled.h3`
+    color: ${props => props.theme.background_text};
     padding: 4px 8px;
 `;
 
 const Description = styled.p`
+    color: ${props => props.theme.background_text};
     padding: 4px 8px;
 `;
 
@@ -54,7 +56,7 @@ export default function GeneratorCard({ gen }) {
             <AuthorCridit>by {gen.createdBy.username}</AuthorCridit>
             <LikeCounter simplified likeCount={gen.upvotes.length}/>
             <Description>{gen.description}</Description>
-            <LinkButton to={`/generator/${gen.unique_name}`} style={{display:"block", marginBottom:"8px"}}>Generate</LinkButton>
+            <LinkButton to={`/generator/${gen.unique_name}`} style={{display:"block", margin:"8px"}}>Generate</LinkButton>
         </CardArea>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import {ThemeProvider} from 'styled-components';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import styled, { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import useTheme from './hooks/useTheme';
 
 import Navbar from './components/navigation/Navbar';
 import Button from './components/general/Button';
@@ -11,18 +12,12 @@ import LoginPage from './pages/LoginPage';
 import GeneratorListingPage from './pages/GeneratorListingPage';
 import CreateGeneratorPage from './pages/CreateGeneratorPage';
 
-// the theme used by styled components
-var theme = {
-  main: "#16b897",
-  main_dark: "#03362b",
-  main_wash: "#bdf2e7",
-  highlight: "#b813d1",
-  highlight_dark: "#7d078f",
-  main_overlay: "white",
-  main_dark_overlay: "white",
-  background: "white",
-  background_text: "black"
-};
+
+const MainArea = styled.div`
+	width: 100%;
+	height: 100%;
+	background-color: ${props => props.theme.background};
+`;
 
 /**
  * The base-level component that handles all routing
@@ -30,6 +25,7 @@ var theme = {
  */
 export default function App() {
 	const [user, setUser] = useState(null);
+	const [theme, shuffleTheme] = useTheme();
 
 	// use the jwt to authenticate and get info about the user
 	const login = (token) => {
@@ -67,27 +63,29 @@ export default function App() {
 	return (
 		<ThemeProvider theme={theme}>
 			<Router>
-				<Navbar user={user}/>
-				<Switch>
-					<Route path="/newgenerator">
-						<CreateGeneratorPage user={user}/>
-					</Route>
-					<Route path="/generator">
-						<GeneratorListingPage user={user}/>
-					</Route>
-					<Route path="/user">
-						<h1>User</h1>
-						<Button onClick={()=>logout()}>Log Out</Button>
-					</Route>
-					<Route path="/login">
-						<LoginPage login={login}/>
-					</Route>
-					<Route path="/">
-						<LandingPage />
-					</Route>
-				</Switch>
+				<MainArea>
+					<Navbar user={user} shuffleTheme={shuffleTheme}/>
+					<Switch>
+						<Route path="/newgenerator">
+							<CreateGeneratorPage user={user}/>
+						</Route>
+						<Route path="/generator">
+							<GeneratorListingPage user={user}/>
+						</Route>
+						<Route path="/user">
+							<h1>User</h1>
+							<Button onClick={()=>logout()}>Log Out</Button>
+						</Route>
+						<Route path="/login">
+							<LoginPage login={login}/>
+						</Route>
+						<Route path="/">
+							<LandingPage />
+						</Route>
+					</Switch>
 
-				<Footer />
+					<Footer />
+				</MainArea>
 			</Router>
 		</ThemeProvider>
 	);

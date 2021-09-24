@@ -9,7 +9,7 @@ const GenArea = styled.div`
     margin: 20px 16px 16px 16px;
 `;
 const GenResult = styled.p`
-    color: ${props => props.theme.main};
+    color: ${props => props.theme.main_light};
     padding: 16px;
     font-size: 1.2em;
     &:not(:last-child){

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from "react-router-dom";
 import SvgLogo from '../general/SvgLogo';
+import Button, { LinkButton } from '../general/Button';
 
 const NavArea = styled.nav`
     width: 100%;
@@ -21,26 +22,6 @@ const LinkList = styled.ul`
 const NavItem = styled.li`
     margin: 4px;
     float: left;
-`;
-
-const NavLink = styled(Link)`
-    padding: 8px 16px;
-    display: block;
-    text-decoration: none;
-    text-align: right;
-    font-size: 1.2em;
-    color: ${props => props.theme.main_overlay};
-    background-color: ${props => props.theme.main};
-    border-radius: 4px;
-    border-bottom: solid 3px rgba(0,0,0,0.2);
-    transform: translateY(0);
-    box-shadow: 0 0 0 rgba(0,0,0,0.3);
-    transition: background-color .2s, transform .2s, box-shadow .2s;
-    &:hover {
-        background-color: ${props => props.theme.highlight};
-        transform: translateY(-4px);
-        box-shadow: 0 4px 4px rgba(0,0,0,0.3);
-    }
 `;
 
 const HamburgerButton = styled.button`
@@ -113,19 +94,21 @@ const HamburgerNavItem = styled.li`
  * @param {object} props.user - the logged in user to display their name
  * @returns a component
  */
-export default function Navbar({ user }) {
+export default function Navbar({ user, shuffleTheme }) {
     const [ expanded, setExpanded ] = useState(false);
 
     var items = [
-        <NavLink to="/generator">Generators</NavLink>
+        <LinkButton to="/generator">Generators</LinkButton>
     ];
 
     if (!user) {
-        items.push(<NavLink to="/login">Log In</NavLink>);
+        items.push(<LinkButton to="/login">Log In</LinkButton>);
     }
     else {
-        items.push(<NavLink to="/user">{user.username}</NavLink>);
+        items.push(<LinkButton to="/user">{user.username}</LinkButton>);
     }
+
+    items.push(<Button onClick={shuffleTheme}>Shuffle Theme</Button>);
 
     return(
         <NavArea>

@@ -54,8 +54,12 @@ const SectionHeader = styled.h1`
     margin: 48px 0 16px 0;
 `;
 const Paragraph = styled.p`
+    color: ${props => props.theme.background_text};
     font-size: 1.3em;
     margin: 8px 0;
+`;
+const StyledLink = styled(Link)`
+    color: ${props => props.theme.highlight};
 `;
 
 
@@ -167,12 +171,12 @@ export default function LandingPage() {
                 </Paragraph>
                 <SectionHeader>How Do I Get Started?</SectionHeader>
                 <Paragraph>
-                    You don't need an account to use the generators! <Link to="/generator">Click here</Link> to see a list of
+                    You don't need an account to use the generators! <StyledLink to="/generator">Click here</StyledLink> to see a list of
                     generators that other users have created, and click the "Generate" button on
                     one that sounds good!
                 </Paragraph>
                 <Paragraph>
-                    When you're ready to start creating generators, you'll need <Link to="/login">an account</Link>.
+                    When you're ready to start creating generators, you'll need <StyledLink to="/login">an account</StyledLink>.
                     Don't worry, we don't even ask for an email!
                 </Paragraph>
             </MainContentArea>

@@ -10,10 +10,13 @@ const Form = styled.form`
 `;
 
 const FormLabel = styled.label`
+    color: ${props => props.theme.background_text};
     font-size: 1.2em;
 `;
 
 const FormInput = styled.input`
+    background-color: ${props => props.theme.background};
+    color: ${props => props.theme.background_text};
     font-size: 1.2em;
     border: solid 3px ${props => props.theme.main};
     border-radius: 4px;
@@ -26,6 +29,8 @@ const FormInput = styled.input`
 `;
 
 const FormTextArea = styled.textarea`
+    background-color: ${props => props.theme.background};
+    color: ${props => props.theme.background_text};
     font-size: 1.2em;
     border: solid 3px ${props => props.theme.main};
     border-radius: 4px;

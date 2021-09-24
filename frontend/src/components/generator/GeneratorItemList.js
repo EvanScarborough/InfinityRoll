@@ -22,6 +22,7 @@ const ListNumber = styled.p`
     color: ${props => props.faded ? props.theme.main : props.theme.background_text};
 `;
 const ListText = styled.p`
+    color: ${props => props.theme.background_text};
     grid-area: text;
     font-size: 1.2em;
     padding: 8px 0 0 0;
@@ -53,9 +54,13 @@ const ItemList = styled.div`
 `;
 
 const Description = styled.p`
+    color: ${props => props.theme.background_text};
     font-size: 1.2em;
     padding: 32px 8px;
     text-align: center;
+`;
+const StyledLink = styled(Link)`
+    color: ${props => props.theme.highlight};
 `;
 
 function GeneratorListItem({ num, item, user }) {
@@ -95,7 +100,7 @@ export default function GeneratorItemList({ items, user, addItem }) {
             {items.map((item, i) => <GeneratorListItem key={i} num={i+1} item={item.text} user={item.createdBy} />)}
             {user && user.token ?
                 <AddGeneratorListItem num={items.length + 1} submit={addItem}/> :
-                <Description>Want to expand this list? <Link to="/login">You'll need an account!</Link></Description>}
+                <Description>Want to expand this list? <StyledLink to="/login">You'll need an account!</StyledLink></Description>}
         </ItemList>
     );
 }
