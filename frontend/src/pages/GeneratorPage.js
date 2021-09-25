@@ -42,7 +42,7 @@ const Description = styled.p`
 export default function GeneratorPage({ user }) {
     let { genName } = useParams();
 
-    const [gen, results, generate, addItem, toggleLike] = useGenerator(genName, user);
+    const [gen, results, generate, addItem, removeItem, toggleLike] = useGenerator(genName, user);
     const emojis = useEmojis(gen?.info, 3);
 
     // generate an item right when you load
@@ -67,7 +67,7 @@ export default function GeneratorPage({ user }) {
                 <Button large onClick={() => generate()}>Generate</Button>
             </DetailsArea>
             <GeneratorResultArea results={results} />
-            <GeneratorItemList items={gen.items} user={user} addItem={addItem} />
+            <GeneratorItemList items={gen.items} user={user} addItem={addItem} removeItem={removeItem} />
         </Container>
     );
 }

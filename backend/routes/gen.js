@@ -191,5 +191,24 @@ router.post("/:name/item", auth, [
     }
 );
 
+router.delete("/:generator/item/:item", auth, async (req, res) => {
+    try {
+        const generator = req.params.generator;
+        const item = req.params.item;
+        let genItem = await GenItem.findById(item);
+        if (genItem.createdBy._id != req.user.id) {
+            return res.status(400).json({message: "You cannot delete another user's item"});
+        }
+        await genItem.delete();
+        return res.status(200).json({message: "Successfully deleted item", item: item});
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+});
+
 
 module.exports = router;

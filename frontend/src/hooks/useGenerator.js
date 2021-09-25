@@ -69,7 +69,6 @@ function useGenerator(name, user) {
 
     // function to add an item to the generator. it updates the local and remote copy
     const addItem = item => {
-        console.log(item);
         fetch(`/api/gen/${name}/item`,{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', Accept: 'application/json', token: user.token },
@@ -77,7 +76,22 @@ function useGenerator(name, user) {
             })
             .then(res => res.json()).then(res => {
                 res.item.createdBy = user;
+                res.item.createdBy._id = user.id;
                 setGen({ info: gen.info, items: [...gen.items, res.item]});
+            });
+    };
+
+    // function to remove an item to the generator. it updates the local and remote copy
+    const removeItem = item => {
+        console.log(item);
+        fetch (`/api/gen/${name}/item/${item._id}`,{
+                method: 'DELETE',
+                headers: { Accept: 'application/json', token: user.token }
+            })
+            .then(res => res.json()).then(res => {
+                if (res.hasOwnProperty('item')) {
+                    setGen({ info: gen.info, items: gen.items.filter(i => i._id != res.item)});
+                }
             });
     };
 
@@ -99,7 +113,7 @@ function useGenerator(name, user) {
 		);
     }
 
-    return [gen, results, generate, addItem, toggleLike];
+    return [gen, results, generate, addItem, removeItem, toggleLike];
 }
 
 

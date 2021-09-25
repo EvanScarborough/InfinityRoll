@@ -27,10 +27,17 @@ const ListText = styled.p`
     font-size: 1.2em;
     padding: 8px 0 0 0;
 `;
+const ListItemOptionsArea = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 8px;
+`;
 const ListUser = styled.p`
     grid-area: user;
     color: ${props => props.theme.main};
     padding: 4px 0 6px 0;
+    margin-right: 8px;
 `;
 const AddItemForm = styled.form`
     display: flex;
@@ -40,6 +47,8 @@ const AddItemInput = styled.input`
     font-size: 1.2em;
     flex-grow: 1;
     border: solid 3px ${props => props.theme.main};
+    background-color: ${props => props.theme.background};
+    color: ${props => props.theme.background_text};
     border-radius: 4px;
     padding: 8px;
     margin-right: 8px;
@@ -63,12 +72,19 @@ const StyledLink = styled(Link)`
     color: ${props => props.theme.highlight};
 `;
 
-function GeneratorListItem({ num, item, user }) {
+function GeneratorListItem({ num, item, createdBy, user, removeItem }) {
     return (
         <ListItemArea>
             <ListNumber>{num}</ListNumber>
             <ListText>{item}</ListText>
-            <ListUser>By {user.username}</ListUser>
+            <ListItemOptionsArea>
+                <ListUser>By {createdBy.username}</ListUser>
+                {
+                    user && user.id === createdBy._id ?
+                    <Button style={{fontSize:"1em"}} onClick={removeItem}>Delete</Button> :
+                    null
+                }
+            </ListItemOptionsArea>
         </ListItemArea>
     );
 }
@@ -82,7 +98,7 @@ function AddGeneratorListItem({ num, submit }) {
                 <AddItemInput type="text" id="item" value={item} onChange={event => setItem(event.target.value)}></AddItemInput>
                 <Button onClick={e => {e.preventDefault(); submit(item); setItem("");}}>Submit</Button>
             </AddItemForm>
-            <ListUser>Add A New Item</ListUser>
+            <ListUser>Add a new item</ListUser>
         </ListItemArea>
     );
 }
@@ -94,10 +110,12 @@ function AddGeneratorListItem({ num, submit }) {
  * @param {function} props.addItem - a function to call when the add item form is submitted with the item as the argument
  * @returns a component
  */
-export default function GeneratorItemList({ items, user, addItem }) {
+export default function GeneratorItemList({ items, user, addItem, removeItem }) {
     return (
         <ItemList>
-            {items.map((item, i) => <GeneratorListItem key={i} num={i+1} item={item.text} user={item.createdBy} />)}
+            {items.map((item, i) =>
+                <GeneratorListItem key={i} num={i+1} item={item.text} createdBy={item.createdBy} user={user} removeItem={() => removeItem(item)} />
+            )}
             {user && user.token ?
                 <AddGeneratorListItem num={items.length + 1} submit={addItem}/> :
                 <Description>Want to expand this list? <StyledLink to="/login">You'll need an account!</StyledLink></Description>}
