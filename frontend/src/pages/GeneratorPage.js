@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import Container from '../components/general/Container';
 import Button from '../components/general/Button';
 import { useParams } from "react-router-dom";
@@ -32,6 +33,9 @@ const Description = styled.p`
     padding: 32px 8px;
     text-align: center;
 `;
+const StyledLink = styled(Link)`
+    color: ${props => props.theme.highlight};
+`;
 
 /**
  * Displays a specific generator and allows you to generate from it
@@ -56,7 +60,9 @@ export default function GeneratorPage({ user }) {
         <Container title={gen.info.name}>
             <DetailsArea>
                 <GenTags>{emojis}</GenTags>
-                <CreatedBy>By {gen.info.createdBy.username}</CreatedBy>
+                <CreatedBy>By <StyledLink to={`/user/${gen.info.createdBy.username}`}>
+                    {gen.info.createdBy.username}
+                </StyledLink></CreatedBy>
                 <LikeCounter
                     likeCount={gen.info.upvotes.length}
                     youLiked={gen.info.upvotes.includes(user?.id)}

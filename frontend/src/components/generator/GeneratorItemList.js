@@ -78,7 +78,9 @@ function GeneratorListItem({ num, item, createdBy, user, removeItem }) {
             <ListNumber>{num}</ListNumber>
             <ListText>{item}</ListText>
             <ListItemOptionsArea>
-                <ListUser>By {createdBy.username}</ListUser>
+                <ListUser>By <StyledLink to={`/user/${createdBy.username}`}>
+                    {createdBy.username}
+                </StyledLink></ListUser>
                 {
                     user && user.id === createdBy._id ?
                     <Button style={{fontSize:"1em"}} onClick={removeItem}>Delete</Button> :

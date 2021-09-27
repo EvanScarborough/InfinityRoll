@@ -20,7 +20,7 @@ router.get("/:username", async (req, res) => {
         // create a new object without the password
         let retuser = { _id:user._id, username:user.username, createdAt:user.createdAt, admin:user.admin };
         // load all the generators made by that user
-        let generators = await GenList.find({ createdBy: user._id }).populate('createdBy', 'username');
+        let generators = await GenList.find({ createdBy: user._id }).sort({ upvoteCount: -1 }).populate('createdBy', 'username');
         retuser.generators = generators;
         res.status(200).json(retuser);
     }
