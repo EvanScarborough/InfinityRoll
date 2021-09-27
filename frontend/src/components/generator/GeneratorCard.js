@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { LinkButton } from '../general/Button';
 import useEmojis from '../../hooks/useEmojis';
 import LikeCounter from '../general/LikeCounter';
@@ -42,6 +43,10 @@ const Description = styled.p`
     padding: 4px 8px;
 `;
 
+const StyledLink = styled(Link)`
+    color: ${props => props.theme.highlight};
+`;
+
 /**
  * Displays a little card with information about a generator
  * @param {*} props.gen - the generator 
@@ -53,7 +58,7 @@ export default function GeneratorCard({ gen }) {
         <CardArea>
             <CardTitle>{gen.name}</CardTitle>
             <Tags>{emojis}</Tags>
-            <AuthorCridit>by {gen.createdBy.username}</AuthorCridit>
+            <AuthorCridit>by <StyledLink to={`/user/${gen.createdBy.username}`}>{gen.createdBy.username}</StyledLink></AuthorCridit>
             <LikeCounter simplified likeCount={gen.upvotes.length}/>
             <Description>{gen.description}</Description>
             <LinkButton to={`/generator/${gen.unique_name}`} style={{display:"block", margin:"8px"}}>Generate</LinkButton>

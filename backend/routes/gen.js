@@ -191,6 +191,10 @@ router.post("/:name/item", auth, [
     }
 );
 
+/**
+ * /api/gen/{generator name}/item/{item id}
+ * Delete {item id} from the generator
+ */
 router.delete("/:generator/item/:item", auth, async (req, res) => {
     try {
         const generator = req.params.generator;

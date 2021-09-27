@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Link } from "react-router-dom";
 import SvgLogo from '../general/SvgLogo';
 import Button, { LinkButton } from '../general/Button';
+import UserDropdown from './UserDropdown';
 
 const NavArea = styled.nav`
     width: 100%;
@@ -75,9 +76,12 @@ const Hbar = styled.div`
 `;
 
 const HamburgerNavList = styled.ul`
+    background-color: ${props => props.theme.main_wash};
+    border-radius: 8px;
     position: absolute;
-    right: 4px;
-    top: 40px;
+    padding: 8px;
+    right: 8px;
+    top: 48px;
     list-style-type: none;
     z-index: 1000;
     @media(min-width: 801px) {
@@ -94,21 +98,8 @@ const HamburgerNavItem = styled.li`
  * @param {object} props.user - the logged in user to display their name
  * @returns a component
  */
-export default function Navbar({ user, shuffleTheme }) {
+export default function Navbar({ user, logout, shuffleTheme }) {
     const [ expanded, setExpanded ] = useState(false);
-
-    var items = [
-        <LinkButton to="/generator">Generators</LinkButton>
-    ];
-
-    if (!user) {
-        items.push(<LinkButton to="/login">Log In</LinkButton>);
-    }
-    else {
-        items.push(<LinkButton to="/user">{user.username}</LinkButton>);
-    }
-
-    items.push(<Button onClick={shuffleTheme}>Shuffle Theme</Button>);
 
     return(
         <NavArea>
@@ -117,13 +108,25 @@ export default function Navbar({ user, shuffleTheme }) {
                 <LogoText>InfinityRoll</LogoText>
             </LogoBox>
             <LinkList>
-                {items.map((item, i) => <NavItem key={i}>{item}</NavItem>)}
+                <NavItem><LinkButton to="/generator">Generators</LinkButton></NavItem>
+                <NavItem><UserDropdown user={user} logout={logout} /></NavItem>
+                <NavItem><Button onClick={shuffleTheme}>Shuffle Theme</Button></NavItem>
             </LinkList>
             <HamburgerButton onClick={() => setExpanded(!expanded)}><Hbar/><Hbar/><Hbar/></HamburgerButton>
-            { expanded ?
+            { 
+                expanded ?
                 <HamburgerNavList>
-                    {items.map((item, i) => <HamburgerNavItem key={i}>{item}</HamburgerNavItem>)}
-                </HamburgerNavList> : null}
+                    <HamburgerNavItem><LinkButton to="/generator">Generators</LinkButton></HamburgerNavItem>
+                    {
+                        user ?
+                        <HamburgerNavItem><LinkButton to={`/user/${user.username}`}>{user.username}</LinkButton></HamburgerNavItem> : 
+                        <HamburgerNavItem><LinkButton to="/login">Log In</LinkButton></HamburgerNavItem>
+                    }
+                    {user ? <HamburgerNavItem><Button onClick={logout}>Log Out</Button></HamburgerNavItem> : null}
+                    <HamburgerNavItem><Button onClick={shuffleTheme}>Shuffle Theme</Button></HamburgerNavItem>
+                </HamburgerNavList> :
+                null
+            }
         </NavArea>
     );
 }

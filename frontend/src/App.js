@@ -9,6 +9,7 @@ import Footer from './components/navigation/Footer';
 
 import LandingPage from './pages/LandingPage';
 import LoginPage from './pages/LoginPage';
+import UserPage from './pages/UserPage';
 import GeneratorListingPage from './pages/GeneratorListingPage';
 import CreateGeneratorPage from './pages/CreateGeneratorPage';
 
@@ -29,7 +30,7 @@ export default function App() {
 
 	// use the jwt to authenticate and get info about the user
 	const login = (token) => {
-		fetch("/api/user/me", {
+		fetch("/api/user/", {
 			method: 'GET',
 			headers: { Accept: "application/json", token: token }
 		}).then(res => res.json()).then(
@@ -64,7 +65,7 @@ export default function App() {
 		<ThemeProvider theme={theme}>
 			<Router>
 				<MainArea>
-					<Navbar user={user} shuffleTheme={shuffleTheme}/>
+					<Navbar user={user} shuffleTheme={shuffleTheme} logout={logout}/>
 					<Switch>
 						<Route path="/newgenerator">
 							<CreateGeneratorPage user={user}/>
@@ -72,9 +73,8 @@ export default function App() {
 						<Route path="/generator">
 							<GeneratorListingPage user={user}/>
 						</Route>
-						<Route path="/user">
-							<h1>User</h1>
-							<Button onClick={()=>logout()}>Log Out</Button>
+						<Route path="/user/:username">
+							<UserPage user={user}/>
 						</Route>
 						<Route path="/login">
 							<LoginPage login={login}/>

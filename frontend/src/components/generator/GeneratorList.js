@@ -79,3 +79,4 @@ export default function GeneratorList({ user }) {
         </MainArea>
     );
 }
+export { GeneratorGroup }

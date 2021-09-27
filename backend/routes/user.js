@@ -5,8 +5,30 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 const User = require("../models/User");
+const GenList = require("../models/GenList");
 const auth = require("../middleware/auth");
 
+
+/**
+ * /api/user/{username}
+ * Get information about a user
+ */
+router.get("/:username", async (req, res) => {
+    try {
+        let user = await User.findOne({ username:req.params.username });
+        if (!user) res.status(400).json({ message:"Could not find user" });
+        // create a new object without the password
+        let retuser = { _id:user._id, username:user.username, createdAt:user.createdAt, admin:user.admin };
+        // load all the generators made by that user
+        let generators = await GenList.find({ createdBy: user._id }).populate('createdBy', 'username');
+        retuser.generators = generators;
+        res.status(200).json(retuser);
+    }
+    catch (e) {
+        console.log(err.message);
+        res.status(500).json({ message:"Server error" });
+    }
+});
 
 
 /**
@@ -113,10 +135,10 @@ router.post("/login",
 
 
 /**
- * /api/user/me
+ * /api/user/
  * Get information about the logged in user like their username and id
  */
-router.get("/me", auth, async (req, res) => {
+router.get("/", auth, async (req, res) => {
     try {
         // request.user is obtained from Middleware after token authentication
         const user = await User.findById(req.user.id);
