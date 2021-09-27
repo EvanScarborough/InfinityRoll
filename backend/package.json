@@ -4,6 +4,7 @@
   "description": "Server-side code for infinityRoll",
   "main": "app.js",
   "scripts": {
+    "start": "node app",
     "develop": "nodemon app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
